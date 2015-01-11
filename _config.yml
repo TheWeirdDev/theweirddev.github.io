@@ -4,34 +4,32 @@
 # baseurl: /blog
 
 # Site live URL
-url: http://smasue.github.io
+# url: http://smasue.github.io
 
 # Localhost 
-# url: http://127.0.0.1:4000  
+url: http://127.0.0.1:4000  
 
 # Harmony theme configuration. Please change accordingly.
 harmony:
-  name: Harmony
+  name: Sam's blog
   # Little description about your site
-  description: Harmony is free responsive jekyll theme.
-  meta_description: Harmony is free responsive jekyll theme. This will appear in your document head meta (for Google search results) and in your feed.xml site description.
+  description: Technical blog about Alfresco.
+  meta_description: I am Samuel Masue. This blog will cover topics about Alfresco.
   basetheme: theme-base-01 # pre defined thmes are darken, blue-water, redish.
   author: # Author details
-    name: Gayan Virajith
+    name: Samuel Masue
     email: gayanvirajith@gmail.com
-    url: http://gayanvirajith.github.io
+    url: http://smasue.github.io
 
   # Google Analytics key, leave blank to ignore
   google_analytics_key: UA-xxxx-x
 
   # Profile links, leave blank to ignore
   social: 
-    github: gayanvirajith
-    twitter: gayanvirajith
-    facebook: gayanvirajith
-    gplus: +GayanVirajith
-    dribble: gayan
-    pinterest: 
+    github: smasue
+    twitter: smasue
+    linkedin: smasue
+    gplus: +Smasue
   # Toggle disclaimer in footer
   show_disclaimer: true
 
