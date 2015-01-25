@@ -18,7 +18,7 @@ harmony:
   basetheme: theme-base-01 # pre defined thmes are darken, blue-water, redish.
   author: # Author details
     name: Samuel Masue
-    email: gayanvirajith@gmail.com
+    email: samuel.masue@gmail.com
     url: http://smasue.github.io
 
   # Google Analytics key, leave blank to ignore
