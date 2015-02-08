@@ -8,170 +8,237 @@ permalink: extract-metadata
 description: We will se how to extract metadata from a formatted file name.
 ---
 
-This post covers the following topic. How to use documents file name to send metadata into Alfresco? 
+This post covers the following topic. **How to use documents file name to send metadata into Alfresco?**
 
-This post comes 
-with
-the full 
-implementation in an all-in-one project
- on Github just here.
+> Before starting:
+> 
+> A minimum of knowledge about Alfresco is required to follow the article. However there is nothing
+complex and you can find the full implementation in an allinone project [here]({{ site.data.blog.urlExamples }}).
+For 
+those who don't have the
+pre-requisite there are many tutorials which introduce to Alfresco.
+ For instance I recommend the __Alfresco Developer Tutorials__ from Jeff Potts. For this tutorial I used the config 
+ below:
+>
+> > * Alfresco Community 5.0.a
+> > * Fedora 20
+> > * JDK 7
+> > * Maven 3.2.3
+> > * Alfresco Maven SDK 2.0.0 - beta 4
+> > * Intellij Idea 14
+>
 
-> A minimum of knowledge about Alfresco is required to follow. But do not worry! there is nothing 
-really complex and for those who don't have the pre-requisite there are plenty of tutorials which introduce Alfresco.
- For instance I recommend the __Alfresco Developer Tutorials__ from Jeff Potts.
+-----------------------------------
 
-To help us in this task I will use an illustration. Let's say we work for a fictional company MyCo (sorry about the name). 
-Anyway we just received a new project. The medical service of MyCo is full of 
-enthusiasm about archiving their documents electronically. Yes, MyCo is a big company they have their own 
-medical service. And everyday this service produces paper documents. Most of the documents are about employees, for 
-instance they produce
-medical certificates, 
-prescriptions, medical visit and son. Our DB specialist certified us we have data in 
-our database which can be interested for the project. Especially information about
- employees and the list of medical documents types.
+To help us in this task I will use an illustration. Let's say we work for a fictional company MyCo (sorry about the 
+name!) and we just received a new project. The medical service of MyCo is full of 
+enthusiasm about archiving their documents electronically. Actually everyday this service generates many paper 
+documents. Most of the documents are about
+employees. Examples of docs are medical certificates, prescriptions, medical visit and so on. Our DB specialist 
+certified us we have in
+our database data which can be interesting for the project. Especially information about
+ employees and types of medical documents.
 
-Oh! I forgot to say in MyCo we use Alfresco ;).
+Oh! I forgot to say at MyCo we use `Alfresco` ;).
 
-However based on our experience with Alfresco we know that users are not really keen on fill in
+Based on our experience with Alfresco we know that users are not really keen on fill in
 properties for each document. And the success of this project will be partial if half of the properties are missing.
  In 
 order to
-simplify the work of the medical service and to assure having a maximum of metadata filled we decide to
+simplify the work of the medical service and to assure having a maximum of metadata filled we decided to
 implements a mechanism which uses *files name* to
 retrieve metadata at
 upload time.
- 
-## 1. File name pattern
 
-First we need to define a pattern for our files names. In our database we have the tables **PERSON** and
-**MEDICAL_DOCUMENT**. To create our 
+## 1. Content model
+
+First of all we need to define the content model. The medical service needs to have information for each document 
+about the person concerned, the type of the document and the effective date. To start we will create a new
+XML file which is a description of the content model. Let's take a look at it now.
+
+### a. Content model XML
+
+I have done the work for you. 
+
+>This is one solution but of course it can be discussed and other implementations are 
+possible.
+
+[/repo-amp/src/main/amp/config/alfresco/module/repo-amp/model/medicalServiceModel.xml](https://github.com/smasue/blog-examples/blob/master/extract-metadata/repo-amp/src/main/amp/config/alfresco/module/repo-amp/model/medicalServiceModel.xml)
+{% highlight xml%}
+<!--		T Y P E   D E F I N I T I O N S		-->
+
+ <types>
+   <type name="ms:document">
+     <title>Medical service document</title>
+     <parent>cm:content</parent>
+     <mandatory-aspects>
+       <aspect>ms:documentType</aspect>
+       <aspect>ms:person</aspect>
+       <aspect>ms:effectiveDate</aspect>
+     </mandatory-aspects>
+   </type>
+ </types>
+
+ <!--		A S P E C T    D E F I N I T I O N S		-->
+
+ <aspects>
+   <!-- ************************************************************************ -->
+   <!-- Person aspect -->
+   <!-- ************************************************************************ -->
+   <aspect name="ms:person">
+     <title>Patient</title>
+     <properties>
+       <!-- The Person ID of the related person -->
+       <property name="ms:personId">
+         <type>d:long</type>
+         <mandatory>true</mandatory>
+       </property>
+       <property name="ms:firstName">
+         <type>d:text</type>
+       </property>
+       <property name="ms:lastName">
+         <type>d:text</type>
+       </property>
+       <property name="ms:status">
+         <type>d:text</type>
+       </property>
+       <property name="ms:orgUnit">
+         <type>d:text</type>
+       </property>
+     </properties>
+   </aspect>
+
+   <!-- ************************************************************************ -->
+   <!-- Effective date aspect. Effective date of the document -->
+   <!-- ************************************************************************ -->
+   <aspect name="ms:effectiveDate">
+     <title>Effective date</title>
+     <properties>
+       <property name="ms:date">
+         <type>d:date</type>
+         <mandatory>true</mandatory>
+       </property>
+     </properties>
+   </aspect>
+
+   <!-- ************************************************************************ -->
+   <!-- The type of the document. E.g certificate, prescription, ... -->
+   <!-- ************************************************************************ -->
+   <aspect name="ms:documentType">
+     <title>Type</title>
+     <properties>
+       <property name="ms:docTypeCode">
+         <type>d:text</type>
+         <mandatory>true</mandatory>
+       </property>
+       <property name="ms:docTypeName">
+         <type>d:text</type>
+         <mandatory>true</mandatory>
+       </property>
+       <property name="ms:docTypeDescription">
+         <type>d:text</type>
+       </property>
+     </properties>
+   </aspect>
+ </aspects>
+{% endhighlight %}
+
+This model is quite self-explanatory. We can see there are one content type and three aspects:
+
+- `ms:content` (type)
+- `ms:person` (aspect)
+- `ms:effectiveDate` (aspect)
+- `ms:documentType` (aspect)
+
+<br/>
+I'd just 
+like to
+highlight
+why I created aspects to hold the properties instead of adding properties in `ms:content`. First of all, I find the
+aspects much more flexible. Indeed you can easily add or remove properties to a node by manipulating aspects. And then
+ an 
+aspect is crossed type so 
+you 
+can 
+really reuse it.
+
+>In a real world it
+might be better to have a content model at the level of your organisation that holds the generic aspects and types 
+for all your projects. To go further a good practice would be to have one let's say **root type**
+ for your organisation and all other types will inherit from it. This abstract doesn't even need any properties.
+
+### b Spring context
+
+Once the content model XML created we have to tell Alfresco about it. For this we have to add a bean in the Spring 
+context. For a matter of clarity let's create a dedicated context XML for our project `medical-service-context.xml` 
+(or just rename the service-content.xml).
+And add this bean
+bean:
+
+[/repo-amp/src/main/amp/config/alfresco/module/repo-amp/context/medical-service-context.xml](https://github.com/smasue/blog-examples/blob/master/extract-metadata/repo-amp/src/main/amp/config/alfresco/module/repo-amp/context/medical-service-context.xml)
+{% highlight xml%}
+  <!-- Registration of new models -->
+  <bean id="${project.artifactId}_dictionaryBootstrap" parent="dictionaryModelBootstrap"
+        depends-on="dictionaryBootstrap">
+    <property name="models">
+      <list>
+        <value>alfresco/module/${project.artifactId}/model/medicalServiceModel.xml</value>
+      </list>
+    </property>
+  </bean>
+{% endhighlight %}
+
+Do not forget to register our new context file in the module-context.xml.
+
+[/repo-amp/src/main/amp/config/alfresco/module/repo-amp/module-context.xml](https://github.com/smasue/blog-examples/blob/master/extract-metadata/repo-amp/src/main/amp/config/alfresco/module/repo-amp/module-context.xml)
+{% highlight xml%}
+<beans>
+	<import resource="classpath:alfresco/module/${artifactId}/context/service-context.xml" />
+	<import resource="classpath:alfresco/module/${artifactId}/context/medical-service-context.xml" />
+</beans>
+{% endhighlight %}
+
+> The module-context.xml is used to define beans for the AMP module. Actually this context will
+be imported by the application-context.xml. At this stage you can run Alfresco with the new content model however 
+Share is not aware of it. We will modify it soon.
+
+## 2. File name pattern
+
+Now we have a content model we can define the pattern for our files names. In our database we have
+the tables **PERSON** and
+**MEDICAL_DOCUMENT** which contain more or less the properties of our aspects. To create our
 pattern we will use the
-person_id and the medical_document_code from these tables. We also need to specify the effective date of the document 
+**person_id** and the **medical_document_code** primary keys of the tables. We also need to specify the effective date
+ of 
+the 
+document 
 which is an
 important information for our medical service.
 
-Here the pattern we will use:
+Below one pattern which looks reasonable:
 
 `personId;documentCode;effectiveDate`
 
->the person id is a number, document code a string and the effective date should respect the format dd-MM-yyyy
+>The **personId** is a number, **documentCode** is a string and the **effectiveDate** should respect the format dd-MM-yyyy
 
-One example would be
+An example of file name:
 
 `100;CERT;19-01-2015`
 
->In this example the document concerns the person with the id 100, it is a certificate made the 19th of January 2015.
+>This document concerns the person with the id 100. It is a certificate made the 19th of January 2015.
 
-## 2. Repository - content model
+### 3. Share and content model
 
-### a. Content model xml
+Let's go back to our content model. The modifications will be done in the `share-amp` folder. I will go through this 
+part quickly because it is not the heart of the problem.
 
-In this second part I created a basic content model which gives the definition of our metadata according to the 
-medical service requirements. 
+### a. share custom config XML
 
-{% highlight xml%}
- <!--		T Y P E   D E F I N I T I O N S		-->
-
-  <types>
-    <type name="ms:document">
-      <title>Medical service document</title>
-      <parent>cm:content</parent>
-      <mandatory-aspects>
-        <aspect>ms:documentType</aspect>
-        <aspect>ms:person</aspect>
-        <aspect>ms:effectiveDate</aspect>
-      </mandatory-aspects>
-    </type>
-  </types>
-
-  <!--		A S P E C T    D E F I N I T I O N S		-->
-
-  <aspects>
-    <!-- ************************************************************************ -->
-    <!-- Person aspect -->
-    <!-- ************************************************************************ -->
-    <aspect name="ms:person">
-      <title>Patient</title>
-      <properties>
-        <!-- The Person ID of the related person -->
-        <property name="ms:personId">
-          <type>d:long</type>
-          <mandatory>true</mandatory>
-        </property>
-        <property name="ms:firstName">
-          <type>d:text</type>
-        </property>
-        <property name="ms:lastName">
-          <type>d:text</type>
-        </property>
-        <property name="ms:status">
-          <type>d:text</type>
-        </property>
-        <property name="ms:orgUnit">
-          <type>d:text</type>
-        </property>
-      </properties>
-    </aspect>
-
-    <!-- ************************************************************************ -->
-    <!-- Effective date aspect. Effective date of the document -->
-    <!-- ************************************************************************ -->
-    <aspect name="ms:effectiveDate">
-      <title>Effective date</title>
-      <properties>
-        <property name="ms:date">
-          <type>d:date</type>
-          <mandatory>true</mandatory>
-        </property>
-      </properties>
-    </aspect>
-
-    <!-- ************************************************************************ -->
-    <!-- The type of the document. E.g certificate, prescription, ... -->
-    <!-- ************************************************************************ -->
-    <aspect name="ms:documentType">
-      <title>Type</title>
-      <properties>
-        <property name="ms:docTypeCode">
-          <type>d:text</type>
-          <mandatory>true</mandatory>
-        </property>
-        <property name="ms:docTypeName">
-          <type>d:text</type>
-          <mandatory>true</mandatory>
-        </property>
-        <property name="ms:docTypeDescription">
-          <type>d:text</type>
-        </property>
-      </properties>
-    </aspect>
-  </aspects>
-{% endhighlight %}
-
-This model is quite self-explanatory in terms of content. I'd just like to
-highlight 
-why I created aspects to hold the properties instead of putting everything in `ms:content`. First of all, I find the
- aspects much more flexible. Indeed if you want to add properties you just add a new aspect and if you want to remove
-  properties you just remove the aspect from the document. Then the aspect is crossed type. If I had put the
-  information about the 
-person directly in the ms:content I would not be able to use the same properties with another type (E.g. HR documents). 
-In a real case it
- might better to have a common content model at the level of your organization which will hold the common aspects such
-  as the person aspect.
-  
-### b Spring context
-
-### Share
-
-### a. share custom config
-
-Now we need to expose our model in the UI share. Indeed share needs to know about the our model to allow the user to 
-select our types and apply our aspects.
+We need now to expose our model in the UI Share. Indeed share needs to know about the our model to allow the user to
+select our types and aspects from the UI.
 
 
-
-[blog-examples/extract-metadata/share-amp/src/main/resources/META-INF/share-config-custom.xml](blog-examples/extract-metadata/share-amp/src/main/resources/META-INF/share-config-custom.xml)
-
+[/share-amp/src/main/resources/META-INF/share-config-custom.xml](https://github.com/smasue/blog-examples/blob/master/extract-metadata/share-amp/src/main/resources/META-INF/share-config-custom.xml)
 {% highlight xml%}
 <alfresco-config>
 

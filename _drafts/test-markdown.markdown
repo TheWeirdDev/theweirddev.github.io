@@ -1,10 +1,10 @@
 ---
 layout: post
-title:  "Extract metadata from file names"
+title:  "Markdown"
 date:   2015-01-18 23:56:45
 categories:
 - blog
-permalink: extract-metadata
+permalink: markdown
 description: We will se how to extract metadata from a formatted file name.
 ---
 
@@ -40,7 +40,7 @@ the type of document (certificate, prescription, ...). To avoid to enter all the
 
 ## Titre de niveau 2
 
- ### Titre de niveau 3
+### Titre de niveau 3
  
  * Une puce
  * Une autre puce

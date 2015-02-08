@@ -6,8 +6,8 @@
 # Site live URL
 url: http://smasue.github.io
 
-# Localhost 
-# url: http://127.0.0.1:4000  
+# Localhost
+# url: http://127.0.0.1:4000
 
 # Harmony theme configuration. Please change accordingly.
 harmony:
@@ -27,9 +27,10 @@ harmony:
   # Profile links, leave blank to ignore
   social: 
     github: smasue
-    twitter: smasue
+    twitter: SamMcCandless
     linkedin: smasue
-    gplus: +Smasue
+    gplus: +samuelmasué
+    
   # Toggle disclaimer in footer
   show_disclaimer: true
 
@@ -53,3 +54,5 @@ exclude:
 sass:
     sass_dir: assets/css/_sass
     style: :compressed
+    
+gems: [git]

@@ -18,6 +18,8 @@
 
 @import "partials/solarized-dark";
 
+@import "partials/perso";
+
 /* -------------------------------- 
 
  Primary style
@@ -372,7 +374,7 @@ div.page-content {
 
 div.page-content {
   ul {       
-    padding: 0 0 1em 0;
+    padding: 0 0 0 0;
     li {
       @include font-size(14px);
       color: $color-2; 
@@ -521,15 +523,24 @@ blockquote {
   padding: .5em 1em;
   margin: .8em 0;
   color: #7a7a7a;
-  border-left: .25em solid #e5e5e5;
+//  border-left: .25em solid #e5e5e5;
+  background-color: cornsilk;
+  border-radius: 10px;
+  text-align: justify;
 }
 blockquote p:last-child {
   margin-bottom: 0;
 }
 @include MQ(M) {
   blockquote {
-    padding-right: 5em;
+    padding-right: 1em;
     padding-left: 1.25em;
+  }
+}
+
+blockquote{
+  blockquote{
+    margin: 0;
   }
 }
 
@@ -637,8 +648,10 @@ span.post-date {
   text-transform: uppercase;
   @include font-size(12px);
   overflow: hidden;
-  display: block;
-  padding: 1em 0;
+  padding: 5px;
+  background-color: #519f50;
+  border-radius: 5px;
+  color: white;
 
   @include MQ(M) {
     @include font-size(16px);
