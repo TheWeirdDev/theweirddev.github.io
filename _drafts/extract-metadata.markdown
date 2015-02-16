@@ -8,7 +8,7 @@ permalink: extract-metadata
 description: We will se how to extract metadata from a formatted file name.
 ---
 
-This post covers the following topic. **How to use documents file name to send metadata into Alfresco?**
+This post covers the following topic. **How to use files name to send metadata into Alfresco?**
 
 > Before starting:
 > 
@@ -17,7 +17,10 @@ complex and you can find the full implementation in an allinone project [here]({
 For 
 those who don't have the
 pre-requisite there are many tutorials which introduce to Alfresco.
- For instance I recommend the __Alfresco Developer Tutorials__ from Jeff Potts. For this tutorial I used the config 
+ For instance I recommend the __Alfresco Developer Tutorials__ from Jeff Potts. And last but not least, for this 
+ tutorial I
+ used the 
+ config 
  below:
 >
 > > * Alfresco Community 5.0.a
@@ -58,12 +61,10 @@ XML file which is a description of the content model. Let's take a look at it no
 
 ### a. Content model XML
 
-I have done the work for you. 
+Because the purpose of this post is not to explain how to create a content model, I have done the work for you. The 
+result comes below and you can follow the link to see the full file on GitHub.
 
->This is one solution but of course it can be discussed and other implementations are 
-possible.
-
-[/repo-amp/src/main/amp/config/alfresco/module/repo-amp/model/medicalServiceModel.xml](https://github.com/smasue/blog-examples/blob/master/extract-metadata/repo-amp/src/main/amp/config/alfresco/module/repo-amp/model/medicalServiceModel.xml)
+[/repo-amp/src/main/amp/config/alfresco/module/repo-amp/model/medicalServiceModel.xml]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/amp/config/alfresco/module/repo-amp/model/medicalServiceModel.xml)
 {% highlight xml%}
 <!--		T Y P E   D E F I N I T I O N S		-->
 
@@ -155,27 +156,25 @@ I'd just
 like to
 highlight
 why I created aspects to hold the properties instead of adding properties in `ms:content`. First of all, I find the
-aspects much more flexible. Indeed you can easily add or remove properties to a node by manipulating aspects. And then
- an 
-aspect is crossed type so 
+aspects much more flexible. Indeed you can easily add or remove properties to a node by manipulating aspects. And 
+then aspects are crossed type so
 you 
 can 
-really reuse it.
+really reuse them.
 
 >In a real world it
 might be better to have a content model at the level of your organisation that holds the generic aspects and types 
-for all your projects. To go further a good practice would be to have one let's say **root type**
- for your organisation and all other types will inherit from it. This abstract doesn't even need any properties.
+for all your projects. To go further a good practice would be to have a **root type** and all other types will
+inherit from it. (E.g. myco:content, myco:folder)
 
 ### b Spring context
 
 Once the content model XML created we have to tell Alfresco about it. For this we have to add a bean in the Spring 
 context. For a matter of clarity let's create a dedicated context XML for our project `medical-service-context.xml` 
 (or just rename the service-content.xml).
-And add this bean
-bean:
+And add this bean:
 
-[/repo-amp/src/main/amp/config/alfresco/module/repo-amp/context/medical-service-context.xml](https://github.com/smasue/blog-examples/blob/master/extract-metadata/repo-amp/src/main/amp/config/alfresco/module/repo-amp/context/medical-service-context.xml)
+[/repo-amp/src/main/amp/config/alfresco/module/repo-amp/context/medical-service-context.xml]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/amp/config/alfresco/module/repo-amp/context/medical-service-context.xml)
 {% highlight xml%}
   <!-- Registration of new models -->
   <bean id="${project.artifactId}_dictionaryBootstrap" parent="dictionaryModelBootstrap"
@@ -190,7 +189,7 @@ bean:
 
 Do not forget to register our new context file in the module-context.xml.
 
-[/repo-amp/src/main/amp/config/alfresco/module/repo-amp/module-context.xml](https://github.com/smasue/blog-examples/blob/master/extract-metadata/repo-amp/src/main/amp/config/alfresco/module/repo-amp/module-context.xml)
+[/repo-amp/src/main/amp/config/alfresco/module/repo-amp/module-context.xml]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/amp/config/alfresco/module/repo-amp/module-context.xml)
 {% highlight xml%}
 <beans>
 	<import resource="classpath:alfresco/module/${artifactId}/context/service-context.xml" />
@@ -198,13 +197,16 @@ Do not forget to register our new context file in the module-context.xml.
 </beans>
 {% endhighlight %}
 
-> The module-context.xml is used to define beans for the AMP module. Actually this context will
-be imported by the application-context.xml. At this stage you can run Alfresco with the new content model however 
-Share is not aware of it. We will modify it soon.
+> The module-context.xml is used to define beans for your AMP module. Actually this context will
+be imported by the application-context.xml. 
+
+At this stage you can run Alfresco with the new content model however Share is not aware of it. Don't worry we will 
+come back to it in a couple of lines.
+
 
 ## 2. File name pattern
 
-Now we have a content model we can define the pattern for our files names. In our database we have
+Since we have a content model we can define the pattern for our files name. In our database we have
 the tables **PERSON** and
 **MEDICAL_DOCUMENT** which contain more or less the properties of our aspects. To create our
 pattern we will use the
@@ -215,30 +217,30 @@ document
 which is an
 important information for our medical service.
 
-Below one pattern which looks reasonable:
+This pattern for example looks pretty reasonable:
 
 `personId;documentCode;effectiveDate`
 
 >The **personId** is a number, **documentCode** is a string and the **effectiveDate** should respect the format dd-MM-yyyy
 
-An example of file name:
+Example of file name:
 
 `100;CERT;19-01-2015`
 
 >This document concerns the person with the id 100. It is a certificate made the 19th of January 2015.
 
-### 3. Share and content model
+## 3. Share and content model
 
-Let's go back to our content model. The modifications will be done in the `share-amp` folder. I will go through this 
-part quickly because it is not the heart of the problem.
+Let's go back to our content model to make it available in Share. The modifications will be done in the `share-amp`
+folder. I will go through this 
+part quickly because it is not the crux of the issue.
 
 ### a. share custom config XML
 
-We need now to expose our model in the UI Share. Indeed share needs to know about the our model to allow the user to
-select our types and aspects from the UI.
+To expose our content model through the UI Share we mainly need to modify one file, the well-named
+`share-config-custom.xml`. Once again I let you discover by your own this file and anyway the sources are on GitHub.
 
-
-[/share-amp/src/main/resources/META-INF/share-config-custom.xml](https://github.com/smasue/blog-examples/blob/master/extract-metadata/share-amp/src/main/resources/META-INF/share-config-custom.xml)
+[/share-amp/src/main/resources/META-INF/share-config-custom.xml]({{ site.data.blog.urlExtractMeta }}/share-amp/src/main/resources/META-INF/share-config-custom.xml)
 {% highlight xml%}
 <alfresco-config>
 
@@ -319,14 +321,13 @@ select our types and aspects from the UI.
 </alfresco-config>
 {% endhighlight %}
 
-For those who are familiar we this file, there is nothing really special here. 
+For those who are familiar with this file, there is nothing really special here.
 
 ### b. Messages
 
-`medicalService.properties`
+The `share-config-custom` usually comes with properties used for the labels in the UI.
 
-The `share-config-custom` usually comes the properties.
-
+[/share-amp/src/main/amp/config/alfresco/module/share-amp/messages/medicalService.properties]({{ site.data.blog.urlExtractMeta }}/share-amp/src/main/amp/config/alfresco/module/share-amp/messages/medicalService.properties)
 {% highlight xml%}
 #types
 type.ms_document=Medical document
@@ -350,10 +351,9 @@ set.ms_commonpropertiesset=General properties
 set.ms_medicalinfoset=Medical information
 {% endhighlight %}
 
-And then we need to tell Spring to integrate this file 
+Spring needs to know about this properties file.
 
-`medical-service-context.xml`
-
+[/share-amp/src/main/amp/config/alfresco/web-extension/medical-serivce-context.xml]({{ site.data.blog.urlExtractMeta }}/share-amp/src/main/amp/config/alfresco/web-extension/medical-serivce-context.xml)
 {% highlight xml%}
 <?xml version='1.0' encoding='UTF-8'?><!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN'
   'http://www.springframework.org/dtd/spring-beans.dtd'>
@@ -375,30 +375,31 @@ And we are done with share.
 
 ## 3. Repository - Let's structure our project
 
- But first of all we need to structure a bit our project. 
+ We are almost ready to go with the hear of the task. But before coding like crazy we need to structure a
+ bit our project.
 
 ### a. Constants for content model
 
-This part is not mandatory but can it be considered as a good practice. The idea is tp 
-create a Java Interface to list (creating constants) all "items" of our content model. It allows to reference them 
-latter. And it is even possible to make a simple Maven project holding this Interface to externalize and share it.
-You can create a package java/org/myco/medical/constant and then the interface `medicalServiceModel`. Here the final 
-file. You can distinguish two different kind of constants. The first ones are just String we all items name. The 
-second are Qnames corresponding to the items.
+This part is optional but can be considered as a good practice. The idea is to
+create a Java Interface to list all "items" of our content model. It allows to reference them 
+latter instead of having them hard coded everywhere. You can distinguish two different kind of constants. 
+The first ones are just String we items name. The second are Qnames associated to the items.
+
+[/repo-amp/src/main/java/org/myco/medical/constant/MedicalServiceModel.java]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/constant/MedicalServiceModel.java)
 
 > QName represents the qualified name of a Repository item (cf. alfresco javadoc LINK). Which means a QName is a 
 unique identifier for a property or a type, aspect and so on. QName is built for the namespaceURI and the local name 
 of the item.
 
-You can find this file here. 
+> These constants can be placed in a separated maven project in order to easily share them between projects.
 
-#### b. Business entities 
+### b. Business entities
 
 A bit of OOP now with the business model. In our case we will work with persons and document types the information we
  have in our database.  .Let's
 create a package 
 under 
-java/org/myco/medical/bean and the following 
+[/repo-amp/src/main/java/org/myco/medical/bean]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/bean) and the following
 classes :
 
 - Person 
@@ -407,37 +408,35 @@ classes :
 
 Really nothing special!  just basic Java.
 
-### c. External master data access
+### c. External master data access objects (DAO)
 
-Next step is to configure a data source for our external database that contains data about persons and medical 
-document types. Once the data source configured we will need DAO or to use ORM. 
-
-For this article I only created fake DAO with hardcoded object. This part is not purely Alfresco dev. So I 
-will skip it. The Fake DAOs are in the foler java/org/myco/medical/dao.
+Next step would be to configure a data source for the external database. However as I told you I presumed we had a 
+database but I'm not going to create one only for this example. Instead I created fake DAOs with hardcoded
+objects [/repo-amp/src/main/java/org/myco/medical/dao]({{ site.data.blog.urlExtractMeta}}/repo-amp/src/main/java/org/myco/medical/dao).
 
 ### b. Services
 
-Alfresco provides the `Java Foundation API Reference` (https://wiki.alfresco.com/wiki/Java_Foundation_API). It is 
-basically a set a spring beans that provide services to access the capabilities of the Alfresco repository. E.g. you 
-can find the - 
- - NodeService
- - TransactionService
- - NamespaceService
- - ContentService
- - SearchService
- - ActionService
+> Alfresco provides the [Java Foundation API Reference](https://wiki.alfresco.com/wiki/Java_Foundation_API) which is
+ a set of Spring beans that provides services to access the capabilities of the Alfresco repository. Examples
+ of services:
+>
+> > * NodeService
+> > * TransactionService
+> > * NamespaceService
+> > * ContentService
+> > * SearchService
+> > * ActionService
+>
  
- etc. etc. 
- 
- All these services are available throw spring dependency injections. For our case, we will use these services but as
-  a best practice we will create a "Medical API", some services for the medical documents. It will an additional 
-  layer on top of Alfresco API.
+All these services are available with Spring dependency injections. For our case, we will obviously use these 
+services but to go a bit further we will create a custom API. It will be an
+additional layer on top of Alfresco API.
   
-Let's start with the NodeService. The NodeService allows operations at the node level. For example accesser for 
-properties. Add aspect. Remove aspect and so on. The idea for our `MedicalNodeService` is to add a layer. Let's take 
-an example: in the NodeService you have the method addAspect(nodeRef, aspectTypeQName, aspectProperties) which is a bit low level for 
-us. A kind of method we will create in service will be like setPersonAspect(nodeRef, person)
-person aspect : 
+Let's start with the NodeService. The NodeService allows operations at the node level. For instance to get or set 
+properties to a node,  to add aspects, remove aspects, and so on. All of these methods are a bit low level for us. In
+ fact it would be easier to work directly with our business entities. E.g. `setPersonAspect(nodeRef, person)`.
+ 
+Remember the person aspect : 
 
 {% highlight xml%}
 <aspect name="ms:person">
@@ -464,7 +463,7 @@ person aspect :
 </aspect>
 {% endhighlight %}
 
-and Person POJO is 
+And the Person POJO: 
 
 {% highlight java%}
 public class Person
@@ -479,53 +478,91 @@ public class Person
 }
 {% endhighlight %}
 
-This abstraction will allow us to link the content model the business classes and the operations to make in Alfresco.
- Obvisously we are not going to create all services but only the ones we will use. 
+The custom service `MedicalNodeService`:
 
-For this exercice we will create a new package java/org/myco/medical/service and create the `MedicalNodeService.java`. 
-The full class is here. As you can notice we use the NodeService from Alfresco Foundation API. We use Spring 
-autowiring to retrieve this bean into our class. 
+[/repo-amp/src/main/java/org/myco/medical/service/MedicalNodeService.java]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/service/MedicalNodeService.java)
+{% highlight java%}
+/**
+ * set the aspect ms:person to the node.
+ *
+ * @param nodeRef ref of the node.
+ * @param person  properties for the aspect.
+ */
+public void setPersonAspect(NodeRef nodeRef, Person person)
+{
+  Map<QName, Serializable> aspectValues = Maps.newHashMap();
+
+  aspectValues.put(QNAME_PROP_PERSON_ID, person.getId());
+  aspectValues.put(QNAME_PROP_FIRST_NAME, person.getFirstName());
+  aspectValues.put(QNAME_PROP_LAST_NAME, person.getLastName());
+  aspectValues.put(QNAME_PROP_STATUS, person.getStatus());
+  aspectValues.put(QNAME_PROP_ORG_UNIT, person.getOrgUnit());
+  nodeService.addAspect(nodeRef, QNAME_ASPECT_PERSON, aspectValues);
+
+  logger.debug("Set person aspect. Node id: " + nodeRef.getId() + ", person id: " + person.getId());
+}
+{% endhighlight %}
+
+
+> As you can noticed we used Spring autowiring to get Foundation API beans into our class.
+
+We will create more services like this later.
 
 ### c. Spring context
 
-To use our services we will declare our beans into the Spring context. The 
-`module-context.xml` is launched by Alfresco when starting. Indeed, if you take a look to the `application-context
-.xml` we can notice the import to all `module-context.xml`. This file is used to declare and override module specific
- files. If you open it we will see another import `service-context.xml`. There are two declared for the demo. 
- 
- Let's create a new spring context. let's call it `medical-service-context.xml`. We will declare 
- 
- A mettre dans le content model. 
- 
- --------
+With our custom services it is easy to Spring annotations then we don't not need to modify anymore the context.xml. 
+By using the annotation `Service` on a class Spring will treat it as a spring bean.  
+{% highlight java%}
+/**
+ * Medical node service
+ * Additional layer on top of alfresco NodeService
+ */
+@Service
+public class MedicalNodeService implements MedicalServiceModel
+{
+{% endhighlight %}
+
+However we have to tell spring to allow these annotations and which packages to scan:
+[/repo-amp/src/main/amp/config/alfresco/module/repo-amp/context/medical-service-context.xml]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/amp/config/alfresco/module/repo-amp/context/medical-service-context.xml)
+{% highlight xml%}
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd">
+  <context:annotation-config/>
+
+  <context:component-scan base-package="org.myco.medical"/>
+</beans>
+{% endhighlight %}
  
 ## 4. Repository - extract metadata
  
- Finally we can start with the most interesting part, coding logic of our feature.
- 
- To put into place the mechanism we will create a custom `action` which we will use in a `rule`. 
+ Finally we can start with the most interesting part. Briefly the plan is to create a custom 
+ `action` which we will be used in a `rule`...
  
 ### a. Custom action
 
-An action in Alfresco is a unit of work executed upon a node. In practice it is a Java class that extends
-ActionExecuterAbstractBase
- and overrides the executeImpl method. Actions can be called from a rule or can be called from the ActionService 
- (Foundation API). Or even can be configured to be call from the UI in share. In our case we will call the action 
- from a rule apply to a folder. The Upload folder. 
+> Action: in Alfresco is a unit of work executed upon a node. In practice it is a Java class that extends
+`ActionExecuterAbstractBase` and overrides the `executeImpl` method. Actions can be called:
+>
+> > - From a rule
+> > - From the ActionService (Foundation API).
+> > - Or even can be configured to be call from the UI in share. 
 
-> A rule is applied to `folder` and contain `condition` to execute an `action`. 
-We will see later an example of rule.
+> Rule: is applied to a `folder` which determines the scope of the rule. Only nodes inside the folder or nodes that
+enters the folder will be concerned  (rules can be applied to sub-folders as well). Then a rule executes an `action`
+upon the nodes under certain `conditions`. The condition is important, it is like a filter to select upon which
+nodes we want to execute the action. For example, new nodes, newly updated nodes, with a specific type or aspect, ...
 
-Let's start! 
+In our case we will call the action from a rule applied to a folder. Let's start creating a new
+class in a new package.
 
-- New package java/org/myco/medical/action
-- New class ExtractMetadataFromFileName 
-- Extends ActionExecuterAbstractBase
-- Implements methods:
-   - executeImpl(Action action, NodeRef actionedUponNodeRef)
-   - addParameterDefinitions(List<ParameterDefinition> paramList)
-    
-At this step the class looks like this:
+[/repo-amp/src/main/java/org/myco/medical/action]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/action)
+
 {% highlight java%}
 public class ExtractMetadataFromFileName extends ActionExecuterAbstractBase{
   @Override
@@ -542,12 +579,11 @@ public class ExtractMetadataFromFileName extends ActionExecuterAbstractBase{
 }
 {% endhighlight %}
 
-The addParameterDefinitions method is used to define additional variable for the action. In our case we don't really 
-need. So we will leave it empty. Then let's focus on the executeImpl method. This method will contain the all logic 
-of our feature. Here the node will the documents the users will drag-and-drop into Alfresco. The node should have a 
-file name that follows the pattern we defined previously. 
+The `addParameterDefinitions` method is used to pass additional variables to the action, we can leave it empty for our
+case. Let's focus on the `executeImpl` method which will contain the logic
+of our feature. The parameter `actionedUponNodeRef` will reference the medical documents.
 
-The logic is :
+The strategy is:
 
 - Read the node name.
 - Parse the name in order to extract personId, documentCode and effectiveDate.
@@ -555,7 +591,7 @@ The logic is :
 - Apply the type ms:document to the node.
 - Set all medical properties (metadata).
 
-If we translate this into Java it can look like this
+If we translate this into Java it might look something like this
 {% highlight java%}
 // get file name from nodeRef
 String fileName = medicalNodeService.getName(actionedUponNodeRef);
@@ -567,13 +603,10 @@ MedicalDocument medicalDocument = medicalDocumentService.buildMedicalDocumentFro
 medicalDocumentService.createMedicalDocumentFromExistingNode(actionedUponNodeRef, medicalDocument);
 {% endhighlight %}
 
-Because the logic is a bit too complex for one method it is clearer to split it. To respect some OOP principles which
- are re-usability and modularity and to follow Alfresco architecture we will create new services in our medical API. 
- So I am introducing to you the `medicalDocumentService` and the`medicalFileNameService`. I will detail the 
- implementation in a moment. Actually this code is quite
-  self explanatory just to give now the DocumentIdentifiers
-call which is a simple POJO that represents the file name parsed. 
 
+The DocumentIdentifiers is a simple POJO that represents the file name parsed.
+
+[/repo-amp/src/main/java/org/myco/medical/bean/DocumentIdentifiers.java]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/bean/DocumentIdentifiers.java)
 {% highlight java%}
 public class DocumentIdentifiers
 {
@@ -581,14 +614,18 @@ public class DocumentIdentifiers
   private String documentTypeCode;
   private Date effectiveDate;
   private String fileName;
-  
+
   // getters and setters ...
 }
 {% endhighlight %}
 
-But one important I haven't mentioned yet is
- we need to tell Alfresco about this new action. For this we
- have to declare a new in our medical-service-context.xml 
+Because the logic is a bit too complex for one method it's clearer to split it. And to follow our good practices we 
+will create new services. So I am introducing to you the `medicalDocumentService` and the`medicalFileNameService` but
+ we will come back it in a moment.
+
+
+One thing I haven't mentioned yet. We have to tell Alfresco about this new action. For this we
+ have to declare a new bean in our [medical-service-context.xml]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/amp/config/alfresco/module/repo-amp/context/medical-service-context.xml)
 
 {% highlight xml%}
 <!--medical actions-->
@@ -596,20 +633,8 @@ But one important I haven't mentioned yet is
 parent="action-executer"/>
 {% endhighlight %}
 
-I usually define two constants in my actions. Name and description 
-
-{% highlight java%}
-public static final String NAME = "extract-metadata-from-file-name";
-public static final String DESCRIPTION = "Extract metadata from file name following the pattern personId;documentCode;effectiveDate";
-{% endhighlight %}
-
-The NAME should be the same as bean id. We are going to use this constants in our example but it is a good practice 
-to have them defined because if we want to call our action with the ActionService we will need to specify the NAME. 
-
-To finalize our Action we need to run this piece of into a transaction. Thanks to the Alfresco Foundation API and the 
-TransactionService we can easily do it. 
-
-How it's work :
+And finally it's need to be ran into a transaction. Thanks to the Alfresco Foundation API and the
+TransactionService:
 
 {% highlight java%}
 transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
@@ -622,33 +647,16 @@ transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTr
 });
 {% endhighlight %}
 
-The of dependencies injections: 
-{% highlight java%}
-// Alfresco foundation API
-@Autowired
-@Qualifier("NodeService")
-private NodeService nodeService;
-@Autowired
-@Qualifier("TransactionService")
-private TransactionService transactionService;
-
-// Myco Medical API
-@Autowired
-private MedicalFileNameService medicalFileNameService;
-@Autowired
-private MedicalNodeService medicalNodeService;
-@Autowired
-private MedicalDocumentService medicalDocumentService;
-{% endhighlight %}
+The full action is here: [ExtractMetadataFromFileNameAction.java]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/action/ExtractMetadataFromFileNameAction.java)
 
 ## b. MedicalFileNameService 
 
-I have introduce in our action a new medical service. Indeed, since we start to have some treatments around file 
-names it is clearer to divide our logic. 
- 
-Here the class corresponding. 
-Basically the main method so far for this service is to parse a file name and return a DocumentIdentifiers.
+I have introduced a new medical service. Indeed, since we start to have some treatments around file
+names I found nice to have a service dedicated.
 
+Basically the main method of this service is to parse a file name and return the equivalent DocumentIdentifiers.
+
+[/repo-amp/src/main/java/org/myco/medical/service/MedicalFileNameService.java]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/service/MedicalFileNameService.java)
 {% highlight java%}
 public DocumentIdentifiers parseFormattedFileName(String formattedFileName)
   {
@@ -702,22 +710,79 @@ public DocumentIdentifiers parseFormattedFileName(String formattedFileName)
   }
 {% endhighlight %}
 
-This method can be improved. It is a really simple example. And in a real case you should treat error of format and 
-non formatted file name. 
+This is a really simple example and in a real case should be improved. At least handle  non formatted file names.
 
 ## c. MedicalDocumentService 
 
-It is the second service I've introduced in our Action. This service contains two methods.
+It is the second service I've introduced in our Action there are two methods:
+The first one `buildMedicalDocumentFromIdentifiers` uses a documentIdentifier to retrieve business objects and
+build an object [MedicalDocument]({{ site.data.blog.urlExtractMeta}}/repo-amp/src/main/java/org/myco/medical/bean/MedicalDocument.java). The second method
+`createMedicalDocumentFromExistingNode` sets the type ms:content and all medical properties to an existing node.
 
-- void createMedicalDocumentFromExistingNode(NodeRef nodeRef, MedicalDocument medicalDocument)
-- MedicalDocument buildMedicalDocumentFromIdentifiers(DocumentIdentifiers documentIdentifiers)
+[/repo-amp/src/main/java/org/myco/medical/service/MedicalDocumentService.java]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/service/MedicalDocumentService.java)
+{% highlight java%}
+@Service
+public class MedicalDocumentService
+{
 
-I'm not going to explain it because there nothing no complexity in it. But you can take a look here to this service.
+  private Logger logger = Logger.getLogger(MedicalDocumentService.class);
+
+  // Medical service API
+  @Autowired
+  private MedicalPersonDao medicalPersonDao;
+  @Autowired
+  private MedicalDocumentTypeDao medicalDocumentTypeDao;
+  @Autowired
+  private MedicalNodeService medicalNodeService;
+
+  /**
+   * Builds a MedicalDocument from a DocumentIdentifier. Retrieves all data from DAO.
+   * @param documentIdentifiers
+   * @return medical document corresponding to the identifiers
+   */
+  public MedicalDocument buildMedicalDocumentFromIdentifiers(DocumentIdentifiers documentIdentifiers)
+  {
+    MedicalDocument medicalDocument = new MedicalDocument();
+    medicalDocument.setPerson(medicalPersonDao.getPerson(documentIdentifiers.getPersonId()));
+    medicalDocument.setDocumentType(medicalDocumentTypeDao.getDocumentType(documentIdentifiers.getDocumentTypeCode()));
+    medicalDocument.setName(documentIdentifiers.getFileName());
+    medicalDocument.setEffectiveDate(documentIdentifiers.getEffectiveDate());
+    return medicalDocument;
+  }
+
+  /**
+   * Creates a medical document from an existing node.
+   *
+   * @param nodeRef ref of the node.
+   * @param medicalDocument object used to set the properties.
+   */
+  public void createMedicalDocumentFromExistingNode(NodeRef nodeRef, MedicalDocument medicalDocument)
+  {
+    medicalNodeService.setMedicalDocumentType(nodeRef);
+    medicalNodeService.setPersonAspect(nodeRef, medicalDocument.getPerson());
+    medicalNodeService.setDocumentTypeAspect(nodeRef, medicalDocument.getDocumentType());
+    medicalNodeService.setEffectiveDateAspect(nodeRef, medicalDocument.getEffectiveDate());
+    medicalNodeService.setName(nodeRef, medicalDocument.getName());
+  }
+}
+{% endhighlight %}
 
 # 5. The Rule 
 
-I will show you how to manually create the rule using Share. It is possible to create it with the RuleService 
-(Alfresco foundation API once again!).
+Let's see how to manually create the rule using Share. First create a new folder somewhere.
+![New folder]({{ site.url }}/assets/posts/extract-meta/new-folder.png)
+
+Then on this folder click on manage rules and create rule.
+![Manage rules]({{ site.url }}/assets/posts/extract-meta/manage-rules.png)
+
+Create the new rule like this: 
+![Manage rules]({{ site.url }}/assets/posts/extract-meta/new-rule.png)
+
+Let's try to upload a document with the name `1234;PR;19-01-2015.pdf`
+![Manage rules]({{ site.url }}/assets/posts/extract-meta/result-properties.png)
+
+>For information it's possible to create a rule and applying it to a folder via the RuleService (Alfresco foundation 
+API).
 
 # 6. Unit tests 
 

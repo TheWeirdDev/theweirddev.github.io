@@ -525,7 +525,7 @@ blockquote {
   color: #7a7a7a;
 //  border-left: .25em solid #e5e5e5;
   background-color: cornsilk;
-  border-radius: 10px;
+  border-radius: 5px;
   text-align: justify;
 }
 blockquote p:last-child {
@@ -586,8 +586,10 @@ pre {
 .highlight {
   margin-bottom: 1em;
   margin-top: 1em;
+  background-color: white;
   pre {
     margin-bottom: 0;
+    border-radius: 5px;
   }
 }
 
