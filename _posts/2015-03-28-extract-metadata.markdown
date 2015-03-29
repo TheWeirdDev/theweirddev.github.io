@@ -10,18 +10,22 @@ description: We will se how to extract metadata from a formatted file name.
 
 This post covers the following topic. **How to use files name to send metadata into Alfresco?**
 
-> Before starting:
+> __Before starting__
 > 
-> A minimum of knowledge about Alfresco is required to follow the article. However there is nothing
-complex and you can find the full implementation in an allinone project [here]({{ site.data.blog.urlExamples }}).
+> Since this post is the first of a series (I hope), we will go together through the steps needed to customize Alfresco
+and especially how to organize a project. The customization of Alfresco will be done using the all-in-one Maven
+archetype. A
+minimum of
+knowledge on
+Alfresco is
+required in order to understand the article. Don't worry there is nothing
+complex and you can find the full implementation [here]({{ site.data.blog.urlExamples }}).
 For 
 those who don't have the
 pre-requisite there are many tutorials which introduce to Alfresco.
- For instance I recommend the __Alfresco Developer Tutorials__ from Jeff Potts. And last but not least, for this 
- tutorial I
- used the 
- config 
- below:
+ For instance I recommend the __Alfresco Developer Tutorials__ from Jeff Potts.
+>
+>This is my config:
 >
 > > * Alfresco Community 5.0.a
 > > * Fedora 20
@@ -33,7 +37,7 @@ pre-requisite there are many tutorials which introduce to Alfresco.
 
 -----------------------------------
 
-To help us in this task I will use an illustration. Let's say we work for a fictional company MyCo (sorry about the 
+To help us in this task I will use a little story. Let's say we work for a fictional company MyCo (sorry about the
 name!) and we just received a new project. The medical service of MyCo is full of 
 enthusiasm about archiving their documents electronically. Actually everyday this service generates many paper 
 documents. Most of the documents are about
@@ -55,14 +59,29 @@ upload time.
 
 ## 1. Content model
 
-First of all we need to define the content model. The medical service needs to have information for each document 
-about the person concerned, the type of the document and the effective date. To start we will create a new
-XML file which is a description of the content model. Let's take a look at it now.
+The first thing to do is to define the content model. In a document management system it is common to
+attach properties to documents but also to classify documents into different types. All of these will allow us to
+perform
+very accurate treatments and searches. For our study case, the Medical Service needs for a document to have
+information
+ about the person concerned, to know which kind of document document it is and finally at what date the document
+ was  effective.
+
+ Defining the content model is actually writing a specific XML file that describes the properties and
+ types of documents.
+ Let's take a look at this file.
+
+ > In an advance use of Alfresco we can do much more complex things with the content model. Actually it can be a topic
+ for a
+ full
+ article. However there are already enough good documentations on the web such that I don't see the point to
+ convert it here.
 
 ### a. Content model XML
 
-Because the purpose of this post is not to explain how to create a content model, I have done the work for you. The 
-result comes below and you can follow the link to see the full file on GitHub.
+I'm not going to enter into details for the same reason there is already documentation on it. So I have done the work
+ for
+you. The result comes below and you can click the link to see the full file on GitHub.
 
 [/repo-amp/src/main/amp/config/alfresco/module/repo-amp/model/medicalServiceModel.xml]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/amp/config/alfresco/module/repo-amp/model/medicalServiceModel.xml)
 {% highlight xml%}
@@ -100,10 +119,13 @@ result comes below and you can follow the link to see the full file on GitHub.
        <property name="ms:lastName">
          <type>d:text</type>
        </property>
-       <property name="ms:status">
+       <property name="ms:gender">
          <type>d:text</type>
        </property>
-       <property name="ms:orgUnit">
+       <property name="ms:age">
+         <type>d:int</type>
+       </property>
+       <property name="ms:jobTitle">
          <type>d:text</type>
        </property>
      </properties>
@@ -144,7 +166,7 @@ result comes below and you can follow the link to see the full file on GitHub.
  </aspects>
 {% endhighlight %}
 
-This model is quite self-explanatory. We can see there are one content type and three aspects:
+This model is quite self-explanatory. As you can see there is one content type and three aspects:
 
 - `ms:content` (type)
 - `ms:person` (aspect)
@@ -164,7 +186,7 @@ really reuse them.
 
 >In a real world it
 might be better to have a content model at the level of your organisation that holds the generic aspects and types 
-for all your projects. To go further a good practice would be to have a **root type** and all other types will
+for all your projects. To go further a good practice would be to have a **root type** and all other types would
 inherit from it. (E.g. myco:content, myco:folder)
 
 ### b Spring context
@@ -197,16 +219,18 @@ Do not forget to register our new context file in the module-context.xml.
 </beans>
 {% endhighlight %}
 
-> The module-context.xml is used to define beans for your AMP module. Actually this context will
-be imported by the application-context.xml. 
+> The module-context.xml is imported by the application-context.xml which is the main spring context file in Alfresco.
+Thus by importing medical-service-context.xml in the module-context.xml we will assure that our custom beans will be
+integrated.
 
-At this stage you can run Alfresco with the new content model however Share is not aware of it. Don't worry we will 
+At this stage you can run Alfresco with the new content model however Share is not aware of it so you won't see any
+differences in the UI. Don't worry we will
 come back to it in a couple of lines.
 
 
 ## 2. File name pattern
 
-Since we have a content model we can define the pattern for our files name. In our database we have
+Since we have a content model we can define the pattern for our files name. Let's say in our database we have
 the tables **PERSON** and
 **MEDICAL_DOCUMENT** which contain more or less the properties of our aspects. To create our
 pattern we will use the
@@ -217,7 +241,7 @@ document
 which is an
 important information for our medical service.
 
-This pattern for example looks pretty reasonable:
+Here an example of pattern which looks reasonable:
 
 `personId;documentCode;effectiveDate`
 
@@ -228,6 +252,10 @@ Example of file name:
 `100;CERT;19-01-2015`
 
 >This document concerns the person with the id 100. It is a certificate made the 19th of January 2015.
+
+To summarize, a person working in the Medical Service will follow this convention to name his
+files such that once the files uploaded in Alfresco all other data about the person and document type
+will be retrieved from the database.
 
 ## 3. Share and content model
 
@@ -276,52 +304,60 @@ To expose our content model through the UI Share we mainly need to modify one fi
   <!-- ################################ TYPES EXISTING NODES ######################## -->
 
   <config evaluator="node-type" condition="ms:document">
-    <forms>
-      <form>
-        <field-visibility>
-          <!-- cm properties -->
-          <show id="cm:name" for-mode="view"/>
-          <show id="cm:title" for-mode="view"/>
-          <show id="size" for-mode="view"/>
-          <show id="cm:created" for-mode="view"/>
-          <show id="cm:creator" for-mode="view"/>
-          <!-- aspect person -->
-          <show id="ms:personId"/>
-          <show id="ms:firstName" for-mode="view"/>
-          <show id="ms:lastName" for-mode="view"/>
-          <!-- aspect effectiveDate -->
-          <show id="ms:date" for-mode="view"/>
-          <!-- aspect documentType -->
-          <show id="ms:docTypeCode"/>
-          <show id="ms:docTypeName" for-mode="view"/>
-          <show id="ms:docTypeDescription" for-mode="view"/>
-        </field-visibility>
-        <appearance>
-          <set id="medicalinfoset" appearance="fieldset" label-id="set.ms_medicalinfoset"/>
-          <set id="commonpropertiesset" appearance="fieldset" label-id="set.ms_commonpropertiesset"/>
+      <forms>
+        <form>
+          <field-visibility>
+            <!-- cm properties -->
+            <show id="cm:name" for-mode="view"/>
+            <show id="cm:title" for-mode="view"/>
+            <show id="size" for-mode="view"/>
+            <show id="cm:created" for-mode="view"/>
+            <show id="cm:creator" for-mode="view"/>
+            <!-- aspect person -->
+            <show id="ms:personId"/>
+            <show id="ms:firstName" for-mode="view"/>
+            <show id="ms:lastName" for-mode="view"/>
+            <show id="ms:gender" for-mode="view"/>
+            <show id="ms:age" for-mode="view"/>
+            <show id="ms:jobTitle" for-mode="view"/>
+            <!-- aspect effectiveDate -->
+            <show id="ms:date" for-mode="view"/>
+            <!-- aspect documentType -->
+            <show id="ms:docTypeCode"/>
+            <show id="ms:docTypeName" for-mode="view"/>
+            <show id="ms:docTypeDescription" for-mode="view"/>
+          </field-visibility>
+          <appearance>
+            <set id="medicalinfoset" appearance="fieldset" label-id="set.ms_medicalinfoset"/>
+            <set id="commonpropertiesset" appearance="fieldset" label-id="set.ms_commonpropertiesset"/>
 
-          <field id="ms:personId" label-id="prop.ms_personId" set="medicalinfoset"/>
-          <field id="ms:firstName" label-id="prop.ms_firstName" set="medicalinfoset"/>
-          <field id="ms:lastName" label-id="prop.ms_lastName" set="medicalinfoset"/>
-          <field id="ms:date" label-id="prop.ms_date" set="medicalinfoset"/>
-          <field id="ms:docTypeCode" label-id="prop.ms_docTypeCode" set="medicalinfoset"/>
-          <field id="ms:docTypeName" label-id="prop.ms_docTypeName" set="medicalinfoset"/>
-          <field id="ms:docTypeDescription" label-id="prop.ms_docTypeDescription" set="medicalinfoset"/>
+            <field id="ms:personId" label-id="prop.ms_personId" set="medicalinfoset"/>
+            <field id="ms:firstName" label-id="prop.ms_firstName" set="medicalinfoset"/>
+            <field id="ms:lastName" label-id="prop.ms_lastName" set="medicalinfoset"/>
+            <field id="ms:gender" label-id="prop.ms_gender" set="medicalinfoset"/>
+            <field id="ms:age" label-id="prop.ms_age" set="medicalinfoset"/>
+            <field id="ms:jobTitle" label-id="prop.ms_jobTitle" set="medicalinfoset"/>
+            <field id="ms:date" label-id="prop.ms_date" set="medicalinfoset"/>
+            <field id="ms:docTypeCode" label-id="prop.ms_docTypeCode" set="medicalinfoset"/>
+            <field id="ms:docTypeName" label-id="prop.ms_docTypeName" set="medicalinfoset"/>
+            <field id="ms:docTypeDescription" label-id="prop.ms_docTypeDescription" set="medicalinfoset"/>
 
-          <field id="cm:name" set="commonpropertiesset"/>
-          <field id="cm:title" set="commonpropertiesset"/>
-          <field id="size" set="commonpropertiesset"/>
-          <field id="cm:created" set="commonpropertiesset"/>
-          <field id="cm:creator" set="commonpropertiesset"/>
-        </appearance>
-      </form>
-    </forms>
-  </config>
+            <field id="cm:name" set="commonpropertiesset"/>
+            <field id="cm:title" set="commonpropertiesset"/>
+            <field id="size" set="commonpropertiesset"/>
+            <field id="cm:created" set="commonpropertiesset"/>
+            <field id="cm:creator" set="commonpropertiesset"/>
+          </appearance>
+        </form>
+      </forms>
+    </config>
 
 </alfresco-config>
 {% endhighlight %}
 
-For those who are familiar with this file, there is nothing really special here.
+For those who are familiar with this file, it is pretty basic. The result should look like this:
+
+![Manage rules]({{ site.url }}/assets/posts/extract-meta/result-properties.png)
 
 ### b. Messages
 
@@ -345,13 +381,16 @@ prop.ms_date=Effective date
 prop.ms_docTypeCode=Code
 prop.ms_docTypeName=Type document
 prop.ms_docTypeDescription=Description
+prop.ms_gender=Gender
+prop.ms_age=Age
+prop.ms_jobTitle=Job title
 
 #sets
 set.ms_commonpropertiesset=General properties
 set.ms_medicalinfoset=Medical information
 {% endhighlight %}
 
-Spring needs to know about this properties file.
+Spring needs to know about this file.
 
 [/share-amp/src/main/amp/config/alfresco/web-extension/medical-serivce-context.xml]({{ site.data.blog.urlExtractMeta }}/share-amp/src/main/amp/config/alfresco/web-extension/medical-serivce-context.xml)
 {% highlight xml%}
@@ -375,43 +414,41 @@ And we are done with share.
 
 ## 3. Repository - Let's structure our project
 
- We are almost ready to go with the hear of the task. But before coding like crazy we need to structure a
+ We are almost ready to go with the heart of the task. But before coding like crazy we need to structure a
  bit our project.
 
 ### a. Constants for content model
 
 This part is optional but can be considered as a good practice. The idea is to
 create a Java Interface to list all "items" of our content model. It allows to reference them 
-latter instead of having them hard coded everywhere. You can distinguish two different kind of constants. 
-The first ones are just String we items name. The second are Qnames associated to the items.
+later instead of having them hard coded everywhere. You can distinguish two different kind of constants.
+The first ones are just strings set with local items names. The second are Qnames associated to the items.
 
 [/repo-amp/src/main/java/org/myco/medical/constant/MedicalServiceModel.java]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/constant/MedicalServiceModel.java)
 
-> QName represents the qualified name of a Repository item (cf. alfresco javadoc LINK). Which means a QName is a 
-unique identifier for a property or a type, aspect and so on. QName is built for the namespaceURI and the local name 
+> QName represents the qualified name of a Repository item. In other words a QName is
+unique identifier for a content model property or a type, aspect, ... QNames are built with the namespace uri and the
+local name
 of the item.
 
 > These constants can be placed in a separated maven project in order to easily share them between projects.
 
 ### b. Business entities
 
-A bit of OOP now with the business model. In our case we will work with persons and document types the information we
- have in our database.  .Let's
-create a package 
-under 
-[/repo-amp/src/main/java/org/myco/medical/bean]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/bean) and the following
+A bit of OOP now. Such as with a typical Java project we have business entities and we need to represent them in our
+project. Here POJOs will do the job. A new package is created
+[/repo-amp/src/main/java/org/myco/medical/bean]({{ site.data.blog.urlExtractMeta}}/repo-amp/src/main/java/org/myco/medical/bean) containing the following
 classes :
 
-- Person 
-- DocumentType 
-- MedicalDocument
-
-Really nothing special!  just basic Java.
+- [Person]({{ site.data.blog.urlExtractMeta}}/repo-amp/src/main/java/org/myco/medical/bean/Person.java)
+- [DocumentType]({{ site.data.blog.urlExtractMeta}}/repo-amp/src/main/java/org/myco/medical/bean/DocumentType.java)
+- [MedicalDocument]({{ site.data.blog.urlExtractMeta}}/repo-amp/src/main/java/org/myco/medical/bean/MedicalDocument.java)
 
 ### c. External master data access objects (DAO)
 
-Next step would be to configure a data source for the external database. However as I told you I presumed we had a 
-database but I'm not going to create one only for this example. Instead I created fake DAOs with hardcoded
+Next step would be to configure a data source for the external database. However I'm not going to create a
+real
+database just for it but instead I created fake DAOs with hardcoded
 objects [/repo-amp/src/main/java/org/myco/medical/dao]({{ site.data.blog.urlExtractMeta}}/repo-amp/src/main/java/org/myco/medical/dao).
 
 ### b. Services
@@ -443,24 +480,31 @@ Remember the person aspect :
   <title>Patient</title>
   <properties>
     <!-- The Person ID of the related person -->
-    <property name="ms:personId">
-      <type>d:long</type>
-      <mandatory>true</mandatory>
-    </property>
-    <property name="ms:firstName">
-      <type>d:text</type>
-    </property>
-    <property name="ms:lastName">
-      <type>d:text</type>
-    </property>
-    <property name="ms:status">
-      <type>d:text</type>
-    </property>
-    <property name="ms:orgUnit">
-      <type>d:text</type>
-    </property>
-  </properties>
-</aspect>
+    <aspect name="ms:person">
+      <title>Patient</title>
+      <properties>
+        <!-- The Person ID of the related person -->
+        <property name="ms:personId">
+          <type>d:long</type>
+          <mandatory>true</mandatory>
+        </property>
+        <property name="ms:firstName">
+          <type>d:text</type>
+        </property>
+        <property name="ms:lastName">
+          <type>d:text</type>
+        </property>
+        <property name="ms:gender">
+          <type>d:text</type>
+        </property>
+        <property name="ms:age">
+          <type>d:int</type>
+        </property>
+        <property name="ms:jobTitle">
+          <type>d:text</type>
+        </property>
+      </properties>
+    </aspect>
 {% endhighlight %}
 
 And the Person POJO: 
@@ -468,17 +512,18 @@ And the Person POJO:
 {% highlight java%}
 public class Person
 {
-  private Long id;
-  private String firstName;
-  private String lastName;
-  private String status; 
-  private String orgUnit;
+   private Long id;
+   private String firstName;
+   private String lastName;
+   private String gender;
+   private String jobTitle;
+   private Integer age;
   
   // getters and setters ...
 }
 {% endhighlight %}
 
-The custom service `MedicalNodeService`:
+So let's create the custom service `MedicalNodeService`:
 
 [/repo-amp/src/main/java/org/myco/medical/service/MedicalNodeService.java]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/service/MedicalNodeService.java)
 {% highlight java%}
@@ -508,10 +553,12 @@ public void setPersonAspect(NodeRef nodeRef, Person person)
 
 We will create more services like this later.
 
-### c. Spring context
+### c. Spring annotations
 
-With our custom services it is easy to Spring annotations then we don't not need to modify anymore the context.xml. 
-By using the annotation `Service` on a class Spring will treat it as a spring bean.  
+With our custom services it is easy to use Spring annotations. For example, by using the annotation `Service` on a
+class
+Spring we
+ can declare a spring bean.
 {% highlight java%}
 /**
  * Medical node service
@@ -541,7 +588,8 @@ However we have to tell spring to allow these annotations and which packages to 
  
 ## 4. Repository - extract metadata
  
- Finally we can start with the most interesting part. Briefly the plan is to create a custom 
+ Finally we can start with the most interesting part, I mean the extraction of the meta-dada from the file names.
+ Concretely the idea is to create a custom
  `action` which we will be used in a `rule`...
  
 ### a. Custom action
@@ -624,7 +672,7 @@ will create new services. So I am introducing to you the `medicalDocumentService
  we will come back it in a moment.
 
 
-One thing I haven't mentioned yet. We have to tell Alfresco about this new action. For this we
+One thing I haven't mentioned yet - we have to tell Alfresco about this new action. For this we
  have to declare a new bean in our [medical-service-context.xml]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/amp/config/alfresco/module/repo-amp/context/medical-service-context.xml)
 
 {% highlight xml%}
@@ -633,7 +681,7 @@ One thing I haven't mentioned yet. We have to tell Alfresco about this new actio
 parent="action-executer"/>
 {% endhighlight %}
 
-And finally it's need to be ran into a transaction. Thanks to the Alfresco Foundation API and the
+And finally we need to run this into a transaction. Thanks to the Alfresco Foundation API and the
 TransactionService:
 
 {% highlight java%}
@@ -714,7 +762,7 @@ This is a really simple example and in a real case should be improved. At least 
 
 ## c. MedicalDocumentService 
 
-It is the second service I've introduced in our Action there are two methods:
+It's the second service I've introduced in our Action. This new service contains two methods:
 The first one `buildMedicalDocumentFromIdentifiers` uses a documentIdentifier to retrieve business objects and
 build an object [MedicalDocument]({{ site.data.blog.urlExtractMeta}}/repo-amp/src/main/java/org/myco/medical/bean/MedicalDocument.java). The second method
 `createMedicalDocumentFromExistingNode` sets the type ms:content and all medical properties to an existing node.
@@ -769,10 +817,10 @@ public class MedicalDocumentService
 
 # 5. The Rule 
 
-Let's see how to manually create the rule using Share. First create a new folder somewhere.
+Let's see how to manually create the rule using Share. First create a new folder somewhere in Alfresco.
 ![New folder]({{ site.url }}/assets/posts/extract-meta/new-folder.png)
 
-Then on this folder click on manage rules and create rule.
+Then on this folder click on manage rules.
 ![Manage rules]({{ site.url }}/assets/posts/extract-meta/manage-rules.png)
 
 Create the new rule like this: 
@@ -781,19 +829,22 @@ Create the new rule like this:
 Let's try to upload a document with the name `1234;PR;19-01-2015.pdf`
 ![Manage rules]({{ site.url }}/assets/posts/extract-meta/result-properties.png)
 
->For information it's possible to create a rule and applying it to a folder via the RuleService (Alfresco foundation 
+>For your information, it's possible to create a rule and applying it to a folder via the RuleService (Alfresco
+foundation
 API).
 
-# 6. Unit tests 
+# 6. Unit tests
+
+Proper unit tests should be developed for this feature. If I have time I will add this part.
 
 # Conclusion
-The feature we implemented today is very basic but I saw much more than this. 
-We actually saw how to structure All-in-one. How to create a custom content model. How to create custom services. Hoe
- to unit test our customizations. How to create Action. Hot to use Alfresco Foundation API and so on.
-
- 
+The feature we implemented today is very basic but we saw much more than just this feature.
+We actually saw how to structure All-in-one. How to create a custom content model. How to create custom services. How
+ to create Action. How to use Alfresco Foundation API etc.
 
 
-
-
-
+To finish, it's not obvious the mechanism of file names that respect a certain convention to get metadata into Alfresco
+ is the better way for end users. Indeed it should be use only with "power users" for other population of users
+ advance
+  UI components in the edit metadata screen would be better. I mean by advance components something like a suggest
+  field that can suggest persons in your database while you are writing.
