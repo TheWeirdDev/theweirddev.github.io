@@ -12,8 +12,7 @@ This post covers the following topic. **How to use files name to send metadata i
 
 > __Before starting__
 > 
-> Since this post is the first of a series (I hope), we will go together through the steps needed to customize Alfresco
-and especially how to organize a project. The customization of Alfresco will be done using the all-in-one Maven
+> Since this post is the first of a series (I hope), we will go together through the steps needed to start a project that extends/customizes Alfresco. Our project will use the All-in-one Maven
 archetype. A
 minimum of
 knowledge on
@@ -74,8 +73,7 @@ information
  > In an advance use of Alfresco we can do much more complex things with the content model. Actually it can be a topic
  for a
  full
- article. However there are already enough good documentations on the web such that I don't see the point to
- convert it here.
+ article. However there are already enough good documentations on the web and there is no real need to enter into details here.
 
 ### a. Content model XML
 
