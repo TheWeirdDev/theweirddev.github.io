@@ -3,15 +3,16 @@ layout: default
 ---
 
 <div class="page-content wc-container">
-	
-	<div class="post">
+
+
+
+	<div class="post" id="main_content">
         <span class="post-date">{{ page.date | date_to_string }}</span>
 		<h1>{{ page.title }}</h1>
 		<div class="post">
 			{{ content }}
 		</div>
 	</div>
-
 
 	{% if site.related_posts %}
 	<div class="related">
@@ -45,4 +46,10 @@ layout: default
 		</div>
 	</div>
 </div>
- 
+<script>
+    $('#main_content').toc({
+    showAlways:true,
+    showText:'Expand TOC',
+    saveShowStatus:false
+    });
+</script>

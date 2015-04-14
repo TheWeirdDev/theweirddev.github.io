@@ -11,10 +11,12 @@
         
         <!-- Harmony styles -->
         <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/assets/css/main.css">
+        <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/assets/css/toc.css">
 
         <!-- Modernizr js -->
-        <script async src="{{ site.baseurl }}/assets/js/modernizr.js"></script>    
-
+        <script async src="{{ site.baseurl }}/assets/js/modernizr.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="{{ site.baseurl }}/assets/js/jquery.toc.js"></script>
         <!-- IE Fixes -->
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -58,7 +60,6 @@
           else window.addEventListener('load', cb);
         </script>
         <!-- jQuery -->
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <!-- When no internet load JQuery from local -->
         <script>window.jQuery || document.write('<script src="{{ site.baseurl }}/assets/js/jquery.min.js"><\/script>')</script>
         <!-- Site js -->
