@@ -40,7 +40,7 @@ To help us in this task I will use a little story. Let's say we work for a ficti
 name!) and we just received a new project. The medical service of MyCo is full of 
 enthusiasm about archiving their documents electronically. Actually everyday this service generates many paper 
 documents. Most of the documents are about
-employees. Examples of docs are medical certificates, prescriptions, medical visit and so on. Our DB specialist 
+employees. Examples of docs are medical certificates, prescriptions, medical visits and so on. Our DB specialist
 certified us we have in
 our database data which can be interesting for the project. Especially information about
  employees and types of medical documents.
@@ -54,21 +54,27 @@ order to
 simplify the work of the medical service and to assure having a maximum of metadata filled we decided to
 implements a mechanism which uses *files name* to
 retrieve metadata at
-upload time.
+upload time. To be a little bit more accurate, we will provide into the files name things like primary keys which
+will be used to retrieve full objects from our databases in order to complete the meta-data.
 
 ## 1. Content model
 
 The first thing to do is to define the content model. In a document management system it is common to
-attach properties to documents but also to classify documents into different types. All of these will allow us to
+attach properties to documents and also to classify documents into different types. All of these will allow us to
 perform
-very accurate treatments and searches. For our study case, the Medical Service needs for a document to have
-information
- about the person concerned, to know which kind of document document it is and finally at what date the document
- was  effective.
+very accurate treatments and searches.
+For our study case, the Medical Service needs for a document to have
+information about:
 
- Defining the content model is actually writing a specific XML file that describes the properties and
+
+- The person concerned.
+- Which kind of document it is.
+- At date the document is/was effective.
+
+
+ Defining the content model that is actually writing a specific XML file that describes the properties and
  types of documents.
- Let's take a look at this file.
+ Let's take a look at this file next part.
 
  > In an advance use of Alfresco we can do much more complex things with the content model. Actually it can be a topic
  for a
@@ -77,9 +83,11 @@ information
 
 ### a. Content model XML
 
-I'm not going to enter into details for the same reason there is already documentation on it. So I have done the work
- for
-you. The result comes below and you can click the link to see the full file on GitHub.
+I already edited this file after many meetings with the Med. Service discussing which meta-data are relevant for them.
+You can find it below -
+click the link
+ to see the full file on
+GitHub.
 
 [/repo-amp/src/main/amp/config/alfresco/module/repo-amp/model/medicalServiceModel.xml]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/amp/config/alfresco/module/repo-amp/model/medicalServiceModel.xml)
 {% highlight xml%}
@@ -183,11 +191,11 @@ can
 really reuse them.
 
 >In a real world it
-might be better to have a content model at the level of your organisation that holds the generic aspects and types 
+might be better to have a content model at the level of your organisation that holds the common aspects and types
 for all your projects. To go further a good practice would be to have a **root type** and all other types would
 inherit from it. (E.g. myco:content, myco:folder)
 
-### b Spring context
+### b. Spring context
 
 Once the content model XML created we have to tell Alfresco about it. For this we have to add a bean in the Spring 
 context. For a matter of clarity let's create a dedicated context XML for our project `medical-service-context.xml` 
@@ -222,43 +230,12 @@ Thus by importing medical-service-context.xml in the module-context.xml we will 
 integrated.
 
 At this stage you can run Alfresco with the new content model however Share is not aware of it so you won't see any
-differences in the UI. Don't worry we will
-come back to it in a couple of lines.
+differences in the UI. Don't worry this is the goal of the next part.
 
+## 2. Share
 
-## 2. File name pattern
-
-Since we have a content model we can define the pattern for our files name. Let's say in our database we have
-the tables **PERSON** and
-**MEDICAL_DOCUMENT** which contain more or less the properties of our aspects. To create our
-pattern we will use the
-**person_id** and the **medical_document_code** primary keys of the tables. We also need to specify the effective date
- of 
-the 
-document 
-which is an
-important information for our medical service.
-
-Here an example of pattern which looks reasonable:
-
-`personId;documentCode;effectiveDate`
-
->The **personId** is a number, **documentCode** is a string and the **effectiveDate** should respect the format dd-MM-yyyy
-
-Example of file name:
-
-`100;CERT;19-01-2015`
-
->This document concerns the person with the id 100. It is a certificate made the 19th of January 2015.
-
-To summarize, a person working in the Medical Service will follow this convention to name his
-files such that once the files uploaded in Alfresco all other data about the person and document type
-will be retrieved from the database.
-
-## 3. Share and content model
-
-Let's go back to our content model to make it available in Share. The modifications will be done in the `share-amp`
-folder. I will go through this 
+So we want our content model to be visible in Share. The modifications will be done in the `share-amp`
+folder. I will go through this
 part quickly because it is not the crux of the issue.
 
 ### a. share custom config XML
@@ -355,7 +332,7 @@ To expose our content model through the UI Share we mainly need to modify one fi
 
 For those who are familiar with this file, it is pretty basic. The result should look like this:
 
-![Manage rules]({{ site.url }}/assets/posts/extract-meta/result-properties.png)
+![Properties]({{ site.url }}/assets/posts/extract-meta/result-properties.png)
 
 ### b. Messages
 
@@ -408,9 +385,38 @@ Spring needs to know about this file.
 </beans>
 {% endhighlight %}
 
-And we are done with share. 
+And we are done with share.
 
-## 3. Repository - Let's structure our project
+## 3. File name pattern
+
+Since we have a content model we can define the pattern for our files name. Let's say in our database we have
+the tables **PERSON** and
+**MEDICAL_DOCUMENT** which contain more or less the properties of our aspects. To create our
+pattern we will use the
+**person_id** and the **medical_document_code** primary keys of the tables. We also need to specify the effective date
+ of 
+the 
+document 
+which is an
+important information for our medical service.
+
+Here an example of pattern which looks reasonable:
+
+`personId;documentCode;effectiveDate`
+
+>The **personId** is a number, **documentCode** is a string and the **effectiveDate** should respect the format dd-MM-yyyy
+
+Example of file name:
+
+`100;CERT;19-01-2015`
+
+>This document concerns the person with the id 100. It is a certificate made the 19th of January 2015.
+
+To summarize, a person working in the Medical Service will follow this convention to name his
+files such that once the files are uploaded in Alfresco all other data about the person and document type
+will be retrieved from the database.
+
+## 4. Repository - Let's structure our project
 
  We are almost ready to go with the heart of the task. But before coding like crazy we need to structure a
  bit our project.
@@ -449,7 +455,7 @@ real
 database just for it but instead I created fake DAOs with hardcoded
 objects [/repo-amp/src/main/java/org/myco/medical/dao]({{ site.data.blog.urlExtractMeta}}/repo-amp/src/main/java/org/myco/medical/dao).
 
-### b. Services
+### d. Services
 
 > Alfresco provides the [Java Foundation API Reference](https://wiki.alfresco.com/wiki/Java_Foundation_API) which is
  a set of Spring beans that provides services to access the capabilities of the Alfresco repository. Examples
@@ -551,7 +557,7 @@ public void setPersonAspect(NodeRef nodeRef, Person person)
 
 We will create more services like this later.
 
-### c. Spring annotations
+### e. Spring annotations
 
 With our custom services it is easy to use Spring annotations. For example, by using the annotation `Service` on a
 class
@@ -584,7 +590,7 @@ However we have to tell spring to allow these annotations and which packages to 
 </beans>
 {% endhighlight %}
  
-## 4. Repository - extract metadata
+## 5. Repository - extract metadata
  
  Finally we can start with the most interesting part, I mean the extraction of the meta-dada from the file names.
  Concretely the idea is to create a custom
@@ -695,7 +701,7 @@ transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTr
 
 The full action is here: [ExtractMetadataFromFileNameAction.java]({{ site.data.blog.urlExtractMeta }}/repo-amp/src/main/java/org/myco/medical/action/ExtractMetadataFromFileNameAction.java)
 
-## b. MedicalFileNameService 
+### b. MedicalFileNameService
 
 I have introduced a new medical service. Indeed, since we start to have some treatments around file
 names I found nice to have a service dedicated.
@@ -758,7 +764,7 @@ public DocumentIdentifiers parseFormattedFileName(String formattedFileName)
 
 This is a really simple example and in a real case should be improved. At least handle  non formatted file names.
 
-## c. MedicalDocumentService 
+### c. MedicalDocumentService
 
 It's the second service I've introduced in our Action. This new service contains two methods:
 The first one `buildMedicalDocumentFromIdentifiers` uses a documentIdentifier to retrieve business objects and
@@ -813,7 +819,7 @@ public class MedicalDocumentService
 }
 {% endhighlight %}
 
-# 5. The Rule 
+## 6. The Rule
 
 Let's see how to manually create the rule using Share. First create a new folder somewhere in Alfresco.
 ![New folder]({{ site.url }}/assets/posts/extract-meta/new-folder.png)
@@ -831,11 +837,11 @@ Let's try to upload a document with the name `1234;PR;19-01-2015.pdf`
 foundation
 API).
 
-# 6. Unit tests
+## 7. Unit tests
 
 Proper unit tests should be developed for this feature. If I have time I will add this part.
 
-# Conclusion
+## Conclusion
 The feature we implemented today is very basic but we saw much more than just this feature.
 We actually saw how to structure All-in-one. How to create a custom content model. How to create custom services. How
  to create Action. How to use Alfresco Foundation API etc.
