@@ -8,7 +8,7 @@ permalink: solr-invalid-number
 description: We will se how to extract metadata from a formatted file name.
 ---
 
-{% highlight javascript%}
+
 <import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/search/search.lib.js">
 
  function main()
@@ -35,7 +35,6 @@ description: We will se how to extract metadata from a formatted file name.
  }
 
 main();
-
 /**
  * ############################################################################################################
  * Due to Alfresco SolrException (Invalid number) after adding in the "default query template" (search.get.config.xml)
@@ -85,4 +84,3 @@ function buildCustomTerm(stringTerm)
   }
   return augmentedTerm;
 }
-{% endhighlight %}

@@ -2,6 +2,7 @@
 layout: post
 title:  "Extract metadata from file names"
 date:   2015-03-28 23:56:45
+comments: true
 categories:
 - blog
 permalink: extract-metadata

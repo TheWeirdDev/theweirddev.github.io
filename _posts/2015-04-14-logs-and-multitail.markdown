@@ -2,6 +2,7 @@
 layout: post
 title:  "Alfresco logs and linux multitail"
 date:   2015-03-28 23:56:45
+comments: true
 categories:
 - blog
 permalink: multitail-logs
