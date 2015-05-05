@@ -9,60 +9,57 @@ permalink: one-click-release
 description: Configure Bamboo to be able to release a Maven project in one click (more or less).
 ---
 
-Nowadays it is common to automate as much as possible development steps of a  project such as releasing, deploying,
-testing and so on. This is part of what we call Continuous Integration. In that post I will talk about one technical
-point - how on Bamboo to configure a plan in such a way we can release a project in one click. Maven is used as a build
-tool, the version control system I use is git (hosted on Stash).
+I would like to share in this post how to configure a Bamboo plan in such a way we can release a project in one click. I use Maven as build
+tool and Git as version  control system (hosted on Stash).
 
-We want a branch to be created each time we do a release. Another way could be do have one release branch, then when
-you configure the repository you make sure to do the checkout on the specific branch.
+To reach our goal we will in a first step create a new branch. Actually we do that for each new release. And then on this branch call the Maven release plugin which will perform the release. 
+
+> It can be possible to use another approach with a unique __release branch__. 
+In that case the plan would start with a checkout of this branch and then take (or not eventually) the changes from master. 
 
 ## Setup the new plan
 
-We should start to create a new plan. Select a repository
+- Create a new plan and select a Git repository:
 ![create plan]({{ site.url }}/assets/posts/release-bamboo/create-plan.png)
 
-Make sure the option `Use shallow clones` is disable in the repository settings.
+- Make sure the option `Use shallow clones` is disable in the repository settings:
 ![create plan]({{ site.url }}/assets/posts/release-bamboo/create-plan.png)
 
-In the newly created plan keep the default checkout task.
+From this new plan we keep the default checkout task.
 
 ## Create a git branch from bamboo
 
-Before going forward we need Bamboo to be able to connect to your git repo. This is different than the config we did
-previously on the `Repositories` section in. In fact we want Bamboo itself to have permissions in read-write. To do
-this
-you need to add the ssh
-key from
-your Bamboo machine to your Stash repo.
+Before going forward we need Bamboo to be able to connect to the Git repo. This is different than the config we did
+previously on the `Repositories` section. Indeed we want Bamboo itself to have permissions in read-write on the repo. The reason for that is, 
+Bamboo will create branches and the Maven release plugin will commit and push. To do so, we need to add the ssh key from the Bamboo machine to the Git repo on Stash.
 
-The only way I found to create branches with Bamboo is with the script task. So I created a new script task, `inline`
- with the following content.
+So now let's create the branch. The only way I found to do it with Bamboo is using the script task. So I created a new one with the following content:
 {% highlight sh%}
 git remote set-url origin ssh://git@somemachine/efiles.git
 git checkout -b release/${bamboo_releaseVersion}
 git push origin release/${bamboo_releaseVersion}
 {% endhighlight %}
 
-I had to explicitly set the url of the origin and then I do a basic `checkout -b` which create a branch and then do a
- checkout on it. The name of the branch use a variable in Bamboo we will in a couple of line. Notice to call variable
-  from script task you have to prefix it with `bamboo_` and then the name of the variable.
-  Finally the script push the new branch to the origin.
+- You can notice I explicitly set the url of the repo origin because the config file in the `.git` folder doesn't contain this information after the checkout task. 
+- Then I run the cmd `git checkout -b newBranch` which create a branch and checkout on it. The name of the branch in built from a Bamboo variable. 
+- Finally the script push the new branch to the origin.
+ 
+ > To call variable from a script task you have to prefix it with `bamboo_` and then the name of the variable. In our example the variable name is `releaseVersion`.
 
 ## Release variables
 
-I lied to you when I said a release procedure in one click because you still need to specific variable before running
- it. I suppose it can be fully automated however I find it a bit more flexible like this. In my case I use only two
+I lied to you when I said a release procedure in one click because you still need to specific variables before running
+ it. I suppose it can be fully automated however I find it a bit more flexible like this. Indeed you can decide whenever you want to increment the minor version number or the major one for instance. In my case I use only two
  variables.
 
- The releaseVersion which is used to create the next branch, to release and create the tag. The second one is the
- nextVersion used to set the next development version (SNAPSHOT).
+ - The *releaseVersion* used to create the branch, to release and create the tag. 
+ - The *nextVersion* used to set the next development version (SNAPSHOT). 
 
 ![variables]({{ site.url }}/assets/posts/release-bamboo/variables.png)
 
-## Maven release
+## Maven release plugin
 
-To do the release itself, I use the maven release plugin and all the magic happens here. Create a new Maven task. I
+To do the release itself, I use the maven release plugin and all the magic happens there. You can create a new Maven task. I
 run a goal more or less similar to this one.
 
 {% highlight sh%}
@@ -75,13 +72,11 @@ release:perform
 -Dtag=${bamboo.releaseVersion}
 {% endhighlight %}
 
-> Remarks:
->
-> > It's only one command.
-> > I did not available the batch mode because it is automatically called with Bamboo.
+> The goal contains actually only one command, one line.
 
 To call the maven release plugin you have to call the command release:prepare release:perform. These commands can
 take parameters:
+
 - releaseProfiles: you cannot call -PprofileName here, but if you want to set a profile then you need to pass it in
 this option. You can pass more than one profile.
 - autoVersionSubmodules: in my case I have sub-projects but I want them all with the same version. By default this
@@ -90,6 +85,8 @@ option is false.
 the variable in opposition to the `bamboo_` in the script task.
 - releaseVersion: to set the version of the release.
 - tag: name of the tag created
+
+> I didn't need to able the batch mode here because Bamboo do it by default.
 
 ## Maven pom
 
