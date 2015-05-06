@@ -445,7 +445,11 @@ div.page-content {
   }
   
   img { 
-    padding: 1em 0;
+    padding: 0 0;
+    margin: 10px;
+    padding: 0px;
+    border: solid 1px rgb(230, 225, 220);
+    border-radius: 5px;
   }
 
   p {

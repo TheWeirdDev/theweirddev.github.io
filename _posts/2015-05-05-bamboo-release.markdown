@@ -12,7 +12,11 @@ description: Configure Bamboo to be able to release a Maven project in one click
 I would like to share in this post how to configure a Bamboo plan in such a way we can release a project in one click. I use Maven as build
 tool and Git as version  control system (hosted on Stash).
 
-To reach our goal we will in a first step create a new branch. Actually we do that for each new release. And then on this branch call the Maven release plugin which will perform the release. 
+To reach our goal we will in first create a new branch. Actually we will that for each new release. Then in a second
+step,
+ on
+this
+branch, will we call the Maven release plugin which will perform the release.
 
 > It can be possible to use another approach with a unique __release branch__. 
 In that case the plan would start with a checkout of this branch and then take (or not eventually) the changes from master. 
@@ -23,7 +27,7 @@ In that case the plan would start with a checkout of this branch and then take (
 ![create plan]({{ site.url }}/assets/posts/release-bamboo/create-plan.png)
 
 - Make sure the option `Use shallow clones` is disable in the repository settings:
-![create plan]({{ site.url }}/assets/posts/release-bamboo/create-plan.png)
+![use-shallow]({{ site.url }}/assets/posts/release-bamboo/use-shallow.png)
 
 From this new plan we keep the default checkout task.
 
@@ -41,14 +45,16 @@ git push origin release/${bamboo_releaseVersion}
 {% endhighlight %}
 
 - You can notice I explicitly set the url of the repo origin because the config file in the `.git` folder doesn't contain this information after the checkout task. 
-- Then I run the cmd `git checkout -b newBranch` which create a branch and checkout on it. The name of the branch in built from a Bamboo variable. 
+- Then I run the cmd `git checkout -b newBranch` which create a branch and checkout on it. The name of the branch is
+built from a Bamboo variable.
 - Finally the script push the new branch to the origin.
  
- > To call variable from a script task you have to prefix it with `bamboo_` and then the name of the variable. In our example the variable name is `releaseVersion`.
+ > In order to call a variable from a script task you have to prefix it with `bamboo_` and then the name of the
+ variable. In our example the variable name is `releaseVersion`.
 
 ## Release variables
 
-I lied to you when I said a release procedure in one click because you still need to specific variables before running
+I lied to you when I said "a release procedure in one click" because you still need to specific variables before running
  it. I suppose it can be fully automated however I find it a bit more flexible like this. Indeed you can decide whenever you want to increment the minor version number or the major one for instance. In my case I use only two
  variables.
 
@@ -59,7 +65,8 @@ I lied to you when I said a release procedure in one click because you still nee
 
 ## Maven release plugin
 
-To do the release itself, I use the maven release plugin and all the magic happens there. You can create a new Maven task. I
+To do the release itself, I use the maven release plugin - all the magic happens there. You can create a new Maven
+task. I
 run a goal more or less similar to this one.
 
 {% highlight sh%}
@@ -77,8 +84,10 @@ release:perform
 To call the maven release plugin you have to call the command release:prepare release:perform. These commands can
 take parameters:
 
-- releaseProfiles: you cannot call -PprofileName here, but if you want to set a profile then you need to pass it in
-this option. You can pass more than one profile.
+- releaseProfiles: it doesn't work to use *-P* to set a profile, the only way is to use this parameter. You can pass
+more than
+one
+profile.
 - autoVersionSubmodules: in my case I have sub-projects but I want them all with the same version. By default this
 option is false.
 - developmentVersion: the next snapshot version. I use the Bamboo variable, you can see the prefix `bamboo.` to get
@@ -90,8 +99,8 @@ the variable in opposition to the `bamboo_` in the script task.
 
 ## Maven pom
 
-For the release plugin to work and the deploy to be done on your Maven artifact repository you need to provide your
-pom with these information. Of course you should replace with real values.
+For the release plugin to work and the deploy to be done on your Maven artifact repository you need to provide into your
+pom with these information. Of course you should replace with real values:
 {% highlight xml%}
 <distributionManagement>
   <repository>
@@ -108,26 +117,26 @@ pom with these information. Of course you should replace with real values.
 </distributionManagement>
 
 <scm>
-  <developerConnection>scm:git:ssh://git@yourrepo/efiles.git</developerConnection>
-  <connection>scm:git:ssh://git@yourrepo/efiles.git</connection>
-  <url>https://yourrepourl/efiles</url>
+  <developerConnection>scm:git:ssh://git@yourrepo/project.git</developerConnection>
+  <connection>scm:git:ssh://git@yourrepo/project.git</connection>
+  <url>https://yourrepourl/project</url>
   <tag>HEAD</tag>
   </scm>
 {% endhighlight %}
 
 ## Useful Tips
 
-If you created "by mistake" some tags, you can get ride of them running these commands:
+- If you created "by mistake" some tags, you can get ride of them running these commands:
 {% highlight sh%}
 git tag -d taganme
 git push origin :refs/tags/tagname
 {% endhighlight %}
 
-During the phase of setting up the plan and trying the maven release plugin, you can use the option `-DdryRun` such
+- During the phase of setting up the plan and trying the maven release plugin, you can use the option `-DdryRun` such
 that
  no
 changes will
- be apply.
+ be apply:
 {% highlight sh%}
 release:prepare
 release:perform
@@ -139,12 +148,12 @@ release:perform
 -DdryRun
 {% endhighlight %}
 
-I got trouble with an old version of the release plugin, I had to set explicitly in my pom.xml a newer version for
-this plugin. The problem was the plugin could not commit and the logs were silent about it.
+- I got trouble with an old version of the release plugin The problem was the plugin could not commit and the logs
+were silent about it. To fix it I had to set explicitly a newer version for this plugin.
 
 ## To go further
 
-There is actually an issue with this plan. In fact if you find a bug in your release and you fix it but you don't
+There is actually an issue with this plan. In fact if you find a bug in your release and you don't
 want to merge on master yet - Then this plan won't work because each time a new branch is created
-from master. I am still working on a better solution however you've got good basics to play on your own and you can
-still create a second plan you will call when you will fix a release.
+from master. I am still working on a better solution however you've got good basis to play on your own and you can
+still create a second plan when fixing a release.
