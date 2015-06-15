@@ -1,0 +1,36 @@
+---
+layout: post
+title:  "Add custom permission"
+date:   2015-06-15 23:56:45
+comments: true
+categories:
+- blog
+permalink: add-custom-permission
+description: How to add a custom permission.
+---
+
+For some cases the out-of-the-box permissions in Alfresco does not fit exactly our needs. However it is not a hard to
+ extend them. In this post, we will see the basics extension with one use case. We will how to add a permission
+ group which will contain the same permissions as a n Editor but in addition will contain Delete permissions.
+
+## Theory
+
+http://docs.alfresco.com/4.0/concepts/secur-permissions.html
+
+To start with permission there is one file to look at it, permissionDefinitions.xml. It is the main configuration
+file. there is another one which is sitePermissionDefinitions.xml which contains the configurations for the sites
+permissions.
+
+Extending permissions it's actually writing such xml files.
+- Permission
+  - has a name, should start with underscore.
+  - may be granted to any number of permission groups.
+  -
+- Permission Group
+  - groups permissions and permission groups together
+- Permissions Set
+
+![share.log]({{ site.url }}/assets/posts/multitail/share_logs.png)
+
+{% highlight sh%}
+{% endhighlight %}

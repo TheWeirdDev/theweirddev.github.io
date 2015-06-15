@@ -13,7 +13,7 @@ url: http://smasue.github.io
 harmony:
   name: Sam's blog
   # Little description about your site
-  description: Technical blog about Alfresco.
+  description: Yet another tech blog! Alfresco, Java, Linux, ...
   meta_description: I am Samuel Masue. This blog will cover topics about Alfresco.
   basetheme: theme-base-01 # pre defined thmes are darken, blue-water, redish.
   author: # Author details
