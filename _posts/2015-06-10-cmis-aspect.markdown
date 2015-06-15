@@ -76,7 +76,7 @@ WHERE p.ms:personId = 11111
 {% endhighlight %}
 
 As you can see the there is a join between the type and the aspect - the aspect is actually considered as a separated
-object. Then the join is made on the property `cmis:objectId. That's all!
+object. Then the join is made on the property `cmis:objectId`. That's all!
 
 
 
