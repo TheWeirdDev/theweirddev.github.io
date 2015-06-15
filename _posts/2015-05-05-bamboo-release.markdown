@@ -12,18 +12,15 @@ description: Configure Bamboo to be able to release a Maven project in one click
 I would like to share in this post how to configure a Bamboo plan in such a way we can release a project in one click. I use Maven as build
 tool and Git as version  control system (hosted on Stash).
 
-To reach our goal we will in first create a new branch. Actually we will that for each new release. Then in a second
-step,
- on
-this
-branch, will we call the Maven release plugin which will perform the release.
+To reach our goal we will at first create a new branch for each new release. Then in a second
+step, we will checkout the branch and call the Maven release plugin to perform the release.
 
 > It can be possible to use another approach with a unique __release branch__. 
 In that case the plan would start with a checkout of this branch and then take (or not eventually) the changes from master. 
 
 ## Setup the new plan
 
-- Create a new plan and select a Git repository:
+- Create a new plan and select a Git repository, let say my project name is eFiles:
 ![create plan]({{ site.url }}/assets/posts/release-bamboo/create-plan.png)
 
 - Make sure the option `Use shallow clones` is disable in the repository settings:
@@ -37,7 +34,7 @@ Before going forward we need Bamboo to be able to connect to the Git repo. This 
 previously on the `Repositories` section. Indeed we want Bamboo itself to have permissions in read-write on the repo. The reason for that is, 
 Bamboo will create branches and the Maven release plugin will commit and push. To do so, we need to add the ssh key from the Bamboo machine to the Git repo on Stash.
 
-So now let's create the branch. The only way I found to do it with Bamboo is using the script task. So I created a new one with the following content:
+After that we can create the branch. The only way I found to do it with Bamboo is using the script task:
 {% highlight sh%}
 git remote set-url origin ssh://git@somemachine/efiles.git
 git checkout -b release/${bamboo_releaseVersion}
