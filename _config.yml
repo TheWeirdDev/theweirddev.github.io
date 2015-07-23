@@ -4,10 +4,10 @@
 # baseurl: /blog
 
 # Site live URL
-#url: http://smasue.github.io
+url: http://smasue.github.io
 
 # Localhost
-url: http://127.0.0.1:4000
+#url: http://127.0.0.1:4000
 
 # Harmony theme configuration. Please change accordingly.
 harmony:
