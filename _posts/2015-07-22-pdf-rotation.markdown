@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Pdf rotation"
+title:  "Alfresco pdf rotation"
 date:   2015-07-22 23:56:45
 comments: true
 categories:
