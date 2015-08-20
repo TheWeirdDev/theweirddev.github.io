@@ -77,8 +77,6 @@ one to rotate counter-clockwise. At the end, we add the actions in the document 
     <actionGroups>
       <actionGroup id="document-details">
         <action index="600" id="rotate-pdf-clockwise"/>
-      </actionGroup>
-      <actionGroup id="document-details">
         <action index="601" id="rotate-pdf-anti-clockwise"/>
       </actionGroup>
     </actionGroups>
