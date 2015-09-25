@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Http client"
+title:  "Java Http client and Json"
 date:   2015-09-16 23:56:45
 comments: true
 categories:
@@ -177,7 +177,7 @@ public class AccessResponse implements Serializable
             throw new ClientProtocolException("Response contains no content");
 
           Gson gson = new GsonBuilder().create();
-          // The EntityUtils which provides nice methods to read the response content.
+          // The EntityUtils provides useful methods to read the response content.
           // I also use the Gson lib to easily convert Json to Java objects and vise versa.
           return gson.fromJson(EntityUtils.toString(entity), AccessResponse.class);
         }
