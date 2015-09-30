@@ -16,14 +16,16 @@ description: Simple example of a Post request using http client from the Apache 
 > > * HTTP Components 4.5
 
 We will see how to use the http client from the Apache HTTP Components version 4.5 which is currently the last
-version. More specifically will do an HTTP post request containing Json information in the body. Then we will see a
-way to read the response and get a POJO from the content.
+version. In particular, we will build an HTTP post request to send a json object. Then, we will see a
+way to read the response to get a POJO.
 
 To illustrate this short article, let's imagine we have a web service which computes some access rights. The service
 accept
 post requests with Json content and return a json response. From a Java client we want to call
-this web service, this idea is to have method which takes a POJO AccessRequest in parameter and then returns a POJO
+this web service, the idea is to have method which takes a POJO AccessRequest in parameter and then returns a POJO
 AccessResponse.
+
+>> AccessResponse getAccess(AccessRequest);
 
 ## Maven pom
 
@@ -149,7 +151,7 @@ public class AccessResponse implements Serializable
 ## Http Client
 
 {% highlight java%}
- public AccessResponse callAccessRightsService(String endPoint, AccessRequest accessRequest)
+ public AccessResponse getAccess(String endPoint, AccessRequest accessRequest)
     throws IOException
   {
     // java 7 try-with-resources that closes the http client for us.
