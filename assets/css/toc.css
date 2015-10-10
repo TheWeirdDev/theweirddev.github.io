@@ -43,11 +43,6 @@
     font-size: 94%;
 }
 
-#toc ul li {
-    list-style-type: none;
-    /*padding-left: 0;*/
-}
-
 #toc-container {
 	margin-bottom: 10px;
 }

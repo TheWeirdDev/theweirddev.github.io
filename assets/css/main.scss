@@ -376,7 +376,7 @@ div.page-content {
   @include MQ(M) {
     min-height: 400px;
   }
-}    
+}
 
 div.page-content {
   ul {       
@@ -385,11 +385,11 @@ div.page-content {
       @include font-size(14px);
       color: $color-2; 
       line-height: 1.6;
-      background: url(./images/bullet.svg);
+      list-style-type: disc;
       background-repeat: no-repeat;
       background-position: 0 6px;
-      padding: 0 0 5px 15px;
-      margin-left: 0;
+      padding: 0 0 5px 0;
+      margin-left: 16px;
     }
     @include MQ(M){        
       li {         
@@ -397,6 +397,15 @@ div.page-content {
         line-height: 1.5;
         background-position: 0 7px; 
       }
+    }
+    .toclevel-1{
+      list-style-type: none;
+    }
+    .toclevel-2{
+      list-style-type: none;
+    }
+    .toclevel-3{
+      list-style-type: none;
     }
   }
   ol { 
@@ -435,7 +444,7 @@ div.page-content {
     }
 
     dt:first-child {
-      padding-top: 0px;
+      padding-top: 0;
     }
 
     dd {
@@ -450,16 +459,16 @@ div.page-content {
     }
   }
   
-  img { 
-    padding: 0 0;
+  img {
     margin: 10px;
-    padding: 0px;
+    padding: 0;
     border: solid 1px rgb(230, 225, 220);
     border-radius: 5px;
   }
 
   p {
-    margin-bottom: 1em;      
+    margin-bottom: 1em;
+    text-align: justify
   }
 
   h1, h2, h3, h4, h5, h6 { 
@@ -578,7 +587,6 @@ pre {
   padding: 1em;
   @include font-size(12px);
   line-height: 1.4;
-  white-space: pre;
   white-space: pre-wrap;
   word-break: break-all;
   word-wrap: break-word;
