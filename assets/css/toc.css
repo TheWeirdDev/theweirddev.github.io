@@ -14,10 +14,10 @@
  */
 
 #toc, .toc, .mw-warning {
-    background-color: #F9F9F9;
-    border: 1px solid #AAAAAA;
+    background-color: #f0f0f0;
     font-size: 95%;
-    padding: 5px;
+    padding: 5px 5px 5px 10px;
+    border-radius: 4px;
 }
 #toc h2, .toc h2 {
     border: medium none;
