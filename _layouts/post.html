@@ -48,6 +48,7 @@ layout: default
 		</div>
 	</div>
 </div>
+{% if page.toc %}
 <script>
     $('#main_content .post').toc({
     showAlways:true,
@@ -55,3 +56,4 @@ layout: default
     saveShowStatus:false
     });
 </script>
+{% endif %}

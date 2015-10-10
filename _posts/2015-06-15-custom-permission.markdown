@@ -6,6 +6,7 @@ comments: true
 categories:
 - blog
 permalink: add-custom-role
+toc: true
 description: Following a simple use case we will see how to add new roles in Alfresco.
 ---
 

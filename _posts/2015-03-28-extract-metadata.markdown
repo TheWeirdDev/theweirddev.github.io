@@ -6,6 +6,7 @@ comments: true
 categories:
 - blog
 permalink: extract-metadata
+toc: true
 description: We will se how to extract metadata from a formatted file name.
 ---
 
