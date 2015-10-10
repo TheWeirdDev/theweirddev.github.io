@@ -5,16 +5,7 @@
     <li>
         <a href="{{ '/blog' | prepend: site.baseurl | prepend: site.url }}">Archive</a><span>/</span>
     </li>
-    {% if site.harmony.social.github %}
-    <li>
-        <a title="{{ site.harmony.social.github }} on Github" 
-           href="https://github.com/{{ site.harmony.social.github }}/{{ site.data.blog.examples }}"
-           target="_blank">
-            Github
-        </a><span>/</span>
-    </li>
     <li>
         <a href="{{ '/about' | prepend: site.baseurl | prepend: site.url }}">About me</a><span>/</span>
     </li>
-    {% endif %}
 </ul>

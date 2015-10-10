@@ -11,9 +11,9 @@ url: http://smasue.github.io
 
 # Harmony theme configuration. Please change accordingly.
 harmony:
-  name: Sam's blog
+  name: Samuel Masue
   # Little description about your site
-  description: Yet another tech blog! Alfresco, Java, Linux, ...
+  description: Yet another tech blog! Let's talk about Alfresco, Java, Linux, ...
   meta_description: I am Samuel Masue. This blog will cover topics about Alfresco.
   basetheme: theme-base-01 # pre defined thmes are darken, blue-water, redish.
   author: # Author details
