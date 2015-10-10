@@ -480,7 +480,8 @@ div.page-content {
 
 // Theme base 01
 body.theme-base-01 {
-  
+  background-color: $base-06;
+
   a {
     @extend .default-anchor;   
   }
@@ -519,8 +520,10 @@ footer.main-footer {
   @include MQ(M) { padding: 2em 0; }
 }
 .page-content {
-  padding: 1em 0;
-  @include MQ(M) { padding: 2em 0; }
+  margin-top: 30px;
+  background-color: $color-white;
+  border-radius: 20px 20px 0 0;
+  @include MQ(M) { padding: 10px 40px 0 40px; }
 }
 
 
