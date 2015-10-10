@@ -14,7 +14,7 @@ already depends. The result will be display in the Share UI:
 
 ![rotate.screen]({{ site.url }}/assets/posts/rotate/rotate-screen.png)
 
->My config:
+>Config:
 >
 > > * Alfresco Community 5.0.c
 > > * Fedora 20

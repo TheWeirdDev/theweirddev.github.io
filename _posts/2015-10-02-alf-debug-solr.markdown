@@ -16,7 +16,7 @@ calls Solr? What are the queries that Alfresco sends to Solr? etc, etc.
 In this post, I will drive you in the right direction in order for you to quickly focus on what matters (problem,
 extension, and so on).
 
->My config:
+>Config:
 >
 > > * Alfresco SDK, All-In-One
 > > * Alfresco Community 5.0.c
