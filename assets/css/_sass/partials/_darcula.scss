@@ -32,7 +32,7 @@ $linenos: #A9B7C6;
   }
   pre::-webkit-scrollbar-thumb{
     background-color: #75715e;
-    border-radius: 4px;
+    @include rounded(4px);
   }
   ::selection {
     background-color: $selectionBackground;
