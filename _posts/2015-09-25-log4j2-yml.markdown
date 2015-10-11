@@ -49,7 +49,7 @@ configuration. There are two
 appenders, `console` and
 `rolling file` then, there is the root logger and two specialized loggers for two classes.
 
-{% highlight javascript%}
+{% highlight yaml%}
 Configutation:
   status: warn
 
@@ -97,7 +97,7 @@ Examples using slf4j:
 
 - In Groovy.
 
-{% highlight java%}
+{% highlight groovy%}
 @Slf4j
 class Foo {
   // some code

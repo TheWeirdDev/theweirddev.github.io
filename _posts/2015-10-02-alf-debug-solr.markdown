@@ -46,7 +46,7 @@ The class **SolrQueryHTTPClient** is one of the most important class when talkin
  logger level on this class, set it to DEBUG.
 
 In your `log4j.properties`:
-{% highlight javascript%}
+{% highlight js %}
 log4j.logger.org.alfresco.repo.search.impl.solr.SolrQueryHTTPClient=debug
 {% endhighlight %}
 
@@ -56,7 +56,7 @@ queries. We can see it's split in two parts: **sent** and **with**. Let's see th
 ### a. Sent
 The **sent** part looks like that:
 
-{% highlight sh %}
+{% highlight rest %}
 /solr4/alfresco/afts?wt=json&fl=DBID,score&rows=251&df=keywords&start=0&locale=en_US...
 {% endhighlight %}
 
@@ -134,7 +134,7 @@ To conclude, a search query is a http post request that contains parameters in t
 It can be handy to run (re-run) "Alfresco-Solr" queries independently to Alfresco. To do so I use the same chrome
 extension I already mentioned as http client. It's really easy to build the http request using the logs we've just
 seen. Use the **sent** part to build the url by adding the host:
-{% highlight sh %}
+{% highlight rest %}
 http://localhost:8080/solr4/alfresco/afts?wt=json&fl=DBID,score...
 {% endhighlight %}
 You have to make sure the http request is a POST request. Then copy the **with** path in the body of your request.
@@ -147,27 +147,29 @@ If Solr is running, it should work.
 The response will be a Json object which could be quite big as well according to the type of query you are performing.
 If you are searching for documents, the Json object will contain something like this (more or less):
 
-{% highlight sh %}
-"responseHeader": {
-      "status": 0,
-      "QTime": 114
-    },
-"_original_parameters_": many things...
-"response": {
-  "numFound": 2,
-  "start": 0,
-  "maxScore": 0.0075914357,
-  "docs": [
-    {
-      "DBID": 972,
-      "score": 0.0075914357
-    },
-    {
-      "DBID": 984,
-      "score": 0.0075914357
-    }
+{% highlight json %}
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 114
+  },
+  "_original_parameters_": "many things..."
+  "response": {
+    "numFound": 2,
+    "start": 0,
+    "maxScore": 0.0075914357,
+    "docs": [
+      {
+        "DBID": 972,
+        "score": 0.0075914357
+      },
+      {
+        "DBID": 984,
+        "score": 0.0075914357
+      }
+    ]
+  }
 }
-...
 {% endhighlight %}
 
 We can see number of documents found, and then the result set.
