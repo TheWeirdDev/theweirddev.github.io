@@ -564,6 +564,21 @@ blockquote{
   }
 }
 
+/* --------------------------------
+
+Code snippets
+
+--------------------------------- */
+p code {
+  font-family: Menlo, Monaco, "Courier New", monospace;
+}
+p code {
+  padding: .25em .5em;
+  font-size: 85%;
+  color: $base-08;
+  background-color: rgba($base-08, .1);
+}
+
 /* Gist via GitHub Pages */
 .gist .gist-file {
   font-family: Menlo, Monaco, "Courier New", monospace !important;
@@ -616,17 +631,13 @@ div.post {
   }
 }
 span.post-date {
-  line-height: 1.6;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  overflow: hidden;
-  padding: 5px;
+  padding: 4px;
   background-color: #519f50;
-  border-radius: 5px;
+  border-radius: 4px;
   color: white;
 
   @include MQ(M) {
-    @include font-size(14px);
+    @include font-size(13px);
   }
 }
 
