@@ -343,6 +343,13 @@ footer.main-footer {
     }
   }
 
+   li a.rss {
+     background-position: -160px 0;
+     &:hover {
+       background-position: -160px -32px;
+     }
+   }
+
   li a.pinterest {
       background-position: -196px 0;
       &:hover {
