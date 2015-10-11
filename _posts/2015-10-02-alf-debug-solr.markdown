@@ -3,8 +3,6 @@ layout: post
 title:  "Alfresco: how to debug Solr queries"
 date:   2015-10-06 23:56:45
 comments: true
-categories:
-- blog
 permalink: alf-debug-solr
 toc: true
 description: A couple of tips about debugging Solr queries with Alfresco.

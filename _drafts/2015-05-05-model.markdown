@@ -1,11 +1,10 @@
 ---
 layout: post
 title:  "Model big title"
-date:   2015-05-05 23:56:45
+date:   2015-10-12 23:56:45
 comments: true
-categories:
-- blog
 permalink: model-link
+toc: true
 description: Description.
 ---
 
@@ -15,7 +14,7 @@ Intro
 
 ![share.log]({{ site.url }}/assets/posts/multitail/share_logs.png)
 
-{% highlight sh%}
+{% highlight sh %}
 {% endhighlight %}
 
 
