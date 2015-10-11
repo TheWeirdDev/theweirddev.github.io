@@ -89,7 +89,7 @@ There are more parameters, this is just a quick overview.
 
 ### b. With
 The **with** part is a Json object so you can easily indent it:
-{% highlight json%}
+{% highlight json linenos %}
 {
   "queryConsistency": "DEFAULT",
   "textAttributes": [],
@@ -118,7 +118,7 @@ The **with** part is a Json object so you can easily indent it:
 {% endhighlight %}
 
 This Json object is sent in the body of the http post request. I would like to highlight here that the main query is
-actually located in this Json object.
+actually located in this Json object (line 18).
 {% highlight sh%}
 "query": "(Foo  AND (+TYPE:\"cm:content\" OR +TYPE:\"cm:folder\")) AND"...
 {% endhighlight %}
@@ -153,7 +153,7 @@ If you are searching for documents, the Json object will contain something like 
     "status": 0,
     "QTime": 114
   },
-  "_original_parameters_": "many things..."
+  "_original_parameters_": "many things...",
   "response": {
     "numFound": 2,
     "start": 0,

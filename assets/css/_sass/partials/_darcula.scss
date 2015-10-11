@@ -12,6 +12,7 @@ $numbers: #6897BB;
 $tag: #f1c829;
 $attributes: #9876AA;
 $comments: #75715e;
+$linenos: #A9B7C6;
 
 .highlight {
   margin-bottom: 1.5em;
@@ -102,4 +103,7 @@ $comments: #75715e;
    .gd { color: $operators; } /* Generic.Deleted & Diff Deleted */
    .gi { color: $names; } /* Generic.Inserted & Diff Inserted */
    .l-Scalar-Plain {color: $names}
+
+   /* line numbers */
+   .lineno{ border-right: solid 1px $linenos; color: $linenos; padding-right: 5px; }
 }
