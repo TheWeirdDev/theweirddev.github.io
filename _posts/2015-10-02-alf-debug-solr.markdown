@@ -48,7 +48,7 @@ In your `log4j.properties`:
 log4j.logger.org.alfresco.repo.search.impl.solr.SolrQueryHTTPClient=debug
 {% endhighlight %}
 
-Once you've change the logger level you will see a lot of things in the logs. In fact, the logs show the Alfresco
+Once you've changed the logger level you will see a lot of things in the logs. In fact, the logs show the Alfresco
 queries. We can see it's split in two parts: **sent** and **with**. Let's see that in more details.
 
 ### a. Sent
