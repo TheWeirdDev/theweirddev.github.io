@@ -145,7 +145,7 @@ abstract class DatabaseService {
   }
 
   protected contractJdbcTemplate() {
-    if (contract == null)
+    if (contractJdbcTemplate == null)
       contractJdbcTemplate = new JdbcTemplate(contractDataSource);
     return contractJdbcTemplate
   }
