@@ -1,8 +1,9 @@
 ---
 layout: post
-title:  "Java Http client and Json"
+title:  "Java Http client and Json v2"
 date:   2015-09-16 23:56:45
 comments: true
+toc: false
 categories:
 - blog
 permalink: http-client
