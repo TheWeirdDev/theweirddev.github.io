@@ -129,9 +129,9 @@ import javax.sql.DataSource
 abstract class DatabaseService {
 
   private JdbcTemplate personJdbcTemplate;
-  private JdbcTemplate aisframeworkJdbcTemplate;
+  private JdbcTemplate contractJdbcTemplate;
 
-  @Autowired // primy datasource
+  @Autowired // primary datasource
   DataSource personDataSource
 
   @Autowired
