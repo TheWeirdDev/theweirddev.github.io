@@ -6,13 +6,14 @@ comments: true
 categories:
 - blog
 permalink: add-custom-role
+toc: true
 description: Following a simple use case we will see how to add new roles in Alfresco.
 ---
 
 For some cases, out of the box roles in Alfresco are not enough. However, it's not so hard to
  extend them. We will see how to do it using a simple example.
 
->My config:
+> Config:
 >
 > > * Alfresco Community 5.0.c
 > > * Fedora 20

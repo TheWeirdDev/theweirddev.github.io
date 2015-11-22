@@ -6,6 +6,7 @@ comments: true
 categories:
 - blog
 permalink: rotate-pdf
+toc: true
 description: Create a custom action to rotate pdf and add it to share.
 ---
 
@@ -14,7 +15,7 @@ already depends. The result will be display in the Share UI:
 
 ![rotate.screen]({{ site.url }}/assets/posts/rotate/rotate-screen.png)
 
->My config:
+>Config:
 >
 > > * Alfresco Community 5.0.c
 > > * Fedora 20
@@ -22,23 +23,23 @@ already depends. The result will be display in the Share UI:
 > > * Maven SDK 2.0.0
 > > * Intellij Idea 14
 
-## Repository
+## 1. Repository
 
-### Create action
+### a. Create action
 
 The action itself is quite simple. It takes only one parameter to tell which direction you want to rotate.
 {% gist 6a33dd8adb60e112ead6 %}
 
-### Spring context
+### b. Spring context
 You need to register the bean in the spring context. The id of the bean will re-used later to call the action. Notice
  the parent `action-executer`.
 {% highlight xml%}
   <bean id="rotate-pdf" class="somepath/action/RotatePdfAction" parent="action-executer"/>
 {% endhighlight %}
 
-## Share
+## 2. Share
 
-### Share custom config
+### a. Share custom config
 On the share side, most of the work is done in the `share-config-custom.xml`. We will define two actions, one to rotate
 clockwise and
 one to rotate counter-clockwise. At the end, we add the actions in the document details page.
@@ -87,7 +88,7 @@ one to rotate counter-clockwise. At the end, we add the actions in the document 
 
 We will see next how to add labels, evaluator and icons.
 
-### Labels
+### b. Labels
 
 It looks nicer with labels so I added these ones to my properties:
 {% highlight xml%}
@@ -97,7 +98,7 @@ action.rotate-pdf-clockwise=Rotate right
 action.rotate-pdf-anti-clockwise=Rotate left
 {% endhighlight %}
 
-### Evaluator
+### c. Evaluator
 We need an evaluator to make the actions appear only for pdf. An is easy way is to re-use an out of the
 box evaluator which returns true if it matches one mimetype from a predefined list (for us the list will
  be only pdf).
@@ -112,7 +113,7 @@ To do so add this bean in your share spring context.
 </bean>
 {% endhighlight %}
 
-### Icons
+### d. Icons
 
 Finally the icons:
 ![rotate1]({{ site.url }}/assets/posts/rotate/rotate-16.png)

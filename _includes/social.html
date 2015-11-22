@@ -50,5 +50,11 @@
             class="pinterest wc-img-replace" target="_blank">Pinterest</a>
     </li> 
     {% endif %}
-
+    {% if site.harmony.social.rss %}
+    <li>
+        <a title="{{ site.harmony.social.rss }} RSS"
+            href="{{site.url}}/{{ site.harmony.social.rss }}"
+            class="rss wc-img-replace" target="_blank">RSS
+        </a>
+    {% endif %}
 </ul>

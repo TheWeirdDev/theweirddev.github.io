@@ -6,6 +6,7 @@ comments: true
 categories:
 - blog
 permalink: multitail-logs
+toc: true
 description: couple of tips around logs in Alfresco.
 ---
 
@@ -29,7 +30,7 @@ I configured the tool with Alfresco logs and I came with this result:
 > Of course it's not aimed to replace a complex monitoring tool in production. Nevertheless it's easy to play with and
  quite fun.
 
-## Prefix logs
+## 1. Prefix logs
 
 I don't know if you noticed on the screens but some lines are prefixed with `REPO_`, `SHARE` or `SOLR_`. Why doing
 this? just to easily visualize from which application the logs come from and to do this you only have to chane the log
@@ -51,7 +52,7 @@ log4j.appender.File.layout.ConversionPattern=REPO_ %d{ISO8601} %x %-5p [%c{3}] [
 Then I've done the same for Share tough as far as I know there is no equivalent custom-log4j.properties with Share.
 Instead I changed the normal log4j.properties in the WEB-INF folder. (I did it for Solr)
 
-## Add the user logged in the NDC
+## 2. Add the user logged in the NDC
 
 NDC is quite a powerful feature that allows to create a context for your logs and add pieces information into the
 logs for this particular context. It might not be really clear said like this, but it doesn't matter, what I want to
@@ -68,7 +69,7 @@ In your log properties
 log4j.appender.Console.layout.ConversionPattern=%d{ISO8601} %x %-5p [%c{3}] [%t] %m%n
 {% endhighlight %}
 
-## Start with Multitail
+## 3. Start with Multitail
 
 To install multitail on your machine run this command (according to your env it might be something else)
 {% highlight sh%}
@@ -98,7 +99,7 @@ You can of course increase the number of lines to output. If you press `h` you c
  multiple files to select one and open it in a separated window, from this window scrolling is enable. So far there are
   no colors. To add them you'll need edit the .multitailrc
 
-## Add colors -> .multitailrc
+## 4. Add colors -> .multitailrc
 
 `.multitailrc` is the config file for multitail - by editing it you can define the syntax coloration for your log. It
 allows to create several color scheme for the different kinds of logs you have. I will show you the color scheme I use
@@ -154,7 +155,7 @@ To run multitail with a color scheme you need ot add the option `-cS`:
 {% highlight sh%}
 multitail -cS alf_log -l 'ssh devalf "tail -1000f /home/alfresco/logs/alfresco.log"'
 
-## More complex multitail
+# More complex multitail
 multitail -cS alf_log -l 'ssh devalf "tail -1000f /home/alfresco/logs/alfresco.log"' -cS alf_log -l 'ssh devalf "tail
 -1000f /home/alfresco/logs/share.log"' -cS alf_log -l 'ssh devalf "tail -1000f /home/alfresco/logs/catalina.log"' -cS
 alf_log -l 'ssh devsolr "tail -1000f /home/alfresco/logs/solr.log"' -cS alf_log -l 'ssh devsolr "tail -1000f /home/alfresco/logs/catalina.log"'
