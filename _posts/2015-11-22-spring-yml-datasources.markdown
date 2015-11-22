@@ -15,7 +15,7 @@ using a YAML config file.
 
 ## application.yml
 
-In order to select the environment I used profiles. Also we can see that two datasources are defined for each
+In order to select the environment I used profiles. Also, we can see that two datasources are defined for each
 env. However it's not gonna to work without the few modifications described next section.
 
 {% highlight yaml%}
