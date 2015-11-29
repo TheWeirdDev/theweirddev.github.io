@@ -80,8 +80,7 @@ datasource:
 
 ## Application.groovy
 
-When configuring multiple datasources we have to define the beans explicitly. Indeed, we need to tell Spring which  
- properties to use for each datasource. Notice that one datasource can be marked as @primary which can save us to use the qualifier
+When configuring multiple datasources we have to define the beans explicitly. Indeed, we need to tell Spring which properties to use for each datasource. Notice that one datasource can be marked as @primary which can save us to use the qualifier
  for the autowiring.
 
 {% highlight groovy%}
