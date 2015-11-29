@@ -10,7 +10,7 @@ permalink: spring-yml-datasources
 description: How to configure multiple datasources in Srping boot using YAML.
 ---
 
-In this example will see how to config two datasources on different environments (development, test, production)
+In this example we will see how to config two datasources on different environments (development, test, production)
 using a YAML config file.
 
 ## application.yml
