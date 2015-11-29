@@ -15,7 +15,7 @@ using a YAML config file.
 
 ## application.yml
 
-In order to select the environment I used profiles. Then, we can see the data sources configured on each
+In order to select the environment I used profiles. Then, we can see the datasources configured on each
 environments.
 
 {% highlight yaml%}
@@ -80,8 +80,8 @@ datasource:
 
 ## Application.groovy
 
-For the case of multiple datasources we need to create the beans explicitly by specifying the
-right properties. A primary datasource can be marked as @primary which can save us to use the qualifier
+When configuring multiple datasources we have to define the beans explicitly. Indeed, we need to tell Spring which  
+ properties to use for each datasource. Notice that one datasource can be marked as @primary which can save us to use the qualifier
  for the autowiring.
 
 {% highlight groovy%}
@@ -117,7 +117,7 @@ class Application {
 
 ## DatabaseService.groovy
 
-Here just an example how to set up jdcTemplates with the datasources.
+Here just an example how to set up jdcTemplates using the datasources.
 
 {% highlight groovy%}
 import org.springframework.beans.factory.annotation.Autowired
