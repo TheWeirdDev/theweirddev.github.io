@@ -15,7 +15,7 @@ using a YAML config file.
 
 ## application.yml
 
-In order to select the environment I used profiles. Then, we can see that datasources configured on each
+In order to select the environment I used profiles. Then, we can see the data sources configured on each
 environments.
 
 {% highlight yaml%}
