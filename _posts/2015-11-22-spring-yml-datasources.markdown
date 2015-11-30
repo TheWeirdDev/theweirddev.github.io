@@ -26,13 +26,13 @@ spring:
 spring:
   profiles: development
 datasource:
-  base-person:
+  db_person:
       url: jdbc:oracle:thin:@db_person_dev
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
       validationQuery: "SELECT 1 FROM dual"
-  base-contrat:
+  db_contract:
       url: jdbc:oracle:thin:@db_contract_dev
       username: username
       password: pwd
@@ -44,13 +44,13 @@ datasource:
 spring:
   profiles: test
 datasource:
-  base-person:
+  db_person:
       url: jdbc:oracle:thin:@db_person_test
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
       validationQuery: "SELECT 1 FROM dual"
-  base-contrat:
+  db_contract:
       url: jdbc:oracle:thin:@db_contract_test
       username: username
       password: pwd
@@ -62,13 +62,13 @@ datasource:
 spring:
   profiles: production
 datasource:
-  base-person:
+  db_person:
       url: jdbc:oracle:thin:@db_person_prod
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
       validationQuery: "SELECT 1 FROM dual"
-  base-contrat:
+  db_contract:
       url: jdbc:oracle:thin:@db_contract_prod
       username: username
       password: pwd
@@ -150,3 +150,4 @@ abstract class DatabaseService {
   }
 }
 {% endhighlight %}
+
