@@ -26,13 +26,13 @@ spring:
 spring:
   profiles: development
 datasource:
-  db_person:
+  db-person:
       url: jdbc:oracle:thin:@db_person_dev
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
       validationQuery: "SELECT 1 FROM dual"
-  db_contract:
+  db-contract:
       url: jdbc:oracle:thin:@db_contract_dev
       username: username
       password: pwd
@@ -44,13 +44,13 @@ datasource:
 spring:
   profiles: test
 datasource:
-  db_person:
+  db-person:
       url: jdbc:oracle:thin:@db_person_test
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
       validationQuery: "SELECT 1 FROM dual"
-  db_contract:
+  db-contract:
       url: jdbc:oracle:thin:@db_contract_test
       username: username
       password: pwd
@@ -62,13 +62,13 @@ datasource:
 spring:
   profiles: production
 datasource:
-  db_person:
+  db-person:
       url: jdbc:oracle:thin:@db_person_prod
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
       validationQuery: "SELECT 1 FROM dual"
-  db_contract:
+  db-contract:
       url: jdbc:oracle:thin:@db_contract_prod
       username: username
       password: pwd
@@ -101,13 +101,13 @@ class Application {
 
   @Bean
   @Primary
-  @ConfigurationProperties(prefix="datasource.db_person")
+  @ConfigurationProperties(prefix="datasource.db-person")
   public DataSource personDataSource() {
     return DataSourceBuilder.create().build();
   }
 
   @Bean
-  @ConfigurationProperties(prefix="datasource.db_contract")
+  @ConfigurationProperties(prefix="datasource.db-contract")
   public DataSource contractDataSource() {
     return DataSourceBuilder.create().build();
   }
