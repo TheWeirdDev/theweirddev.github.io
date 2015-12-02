@@ -31,13 +31,15 @@ datasource:
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
-      validationQuery: "SELECT 1 FROM dual"
+      test-on-borrow: true
+      validation-query: SELECT 1 FROM dual
   db-contract:
       url: jdbc:oracle:thin:@db_contract_dev
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
-      validationQuery: "SELECT 1 FROM dual"
+      test-on-borrow: true
+      validation-query: SELECT 1 FROM dual
 
 ---
 
@@ -49,13 +51,15 @@ datasource:
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
-      validationQuery: "SELECT 1 FROM dual"
+      test-on-borrow: true
+      validation-query: SELECT 1 FROM dual
   db-contract:
       url: jdbc:oracle:thin:@db_contract_test
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
-      validationQuery: "SELECT 1 FROM dual"
+      test-on-borrow: true
+      validation-query: SELECT 1 FROM dual
 
 ---
 
@@ -67,13 +71,15 @@ datasource:
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
-      validationQuery: "SELECT 1 FROM dual"
+      test-on-borrow: true
+      validation-query: SELECT 1 FROM dual
   db-contract:
       url: jdbc:oracle:thin:@db_contract_prod
       username: username
       password: pwd
       driver-class-name: oracle.jdbc.OracleDriver
-      validationQuery: "SELECT 1 FROM dual"
+      test-on-borrow: true
+      validation-query: SELECT 1 FROM dual
 
 ---
 {% endhighlight %}
