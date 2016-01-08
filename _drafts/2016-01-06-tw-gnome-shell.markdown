@@ -118,14 +118,14 @@ function disable() {
     Main.panel._rightBox.remove_child(button);
 }
 {% endhighlight %}
-There is a complete description of this code in the offical documentation [here](https://wiki.gnome.org/Projects/GnomeShell/Extensions/StepByStepTutorial#myFirstExtension).
+There is a complete description of this code in the official documentation [here](https://wiki.gnome.org/Projects/GnomeShell/Extensions/StepByStepTutorial#myFirstExtension).
 
 You can save and close the editor and reopen it in your favorite editor. The extensions are located in this folder:
 {% highlight sh %}
 .local/share/gnome-shell/extensions/
 {% endhighlight %}
 
-You should see a folder named after the uuid you gave. Inside there are three files:
+You should see a folder named after the uuid you gave (If there are other folders it means you already installed gnome extensions). Inside there are three files:
 
 >
 * extension.js
@@ -145,7 +145,7 @@ text = new St.Label({ style_class: 'helloworld-label', text: "My first extension
 
 Then restart gnome-shell to make the change effective. `ALFT+ F2, write "r" and press enter`.
 
-### Step 1 clean up
+### Clean up
 
 We will actually reuse the hello world extension because it has similarities with what we want to build
 . Indeed, it adds a component in the top panel. Of course, instead of an icon we would like a text gotten
@@ -181,11 +181,92 @@ function disable() {
 
 I removed the function showHello and hideHello and change the button to display a text instead of the icon.
  
-### Step 2
+### Use exiting extension as help
 Let's go a bit further, though, it's not that simple without clear documentation. So to helped in this task I 
 went on the Gnome extension web site [https://extensions.gnome.org](https://extensions.gnome.org/) and
-searched for an extension close to mine and took a look a the code. I used this one (Forex indicator)[https://extensions.gnome.org/extension/867/forex-indicator/]
-which is actually much more complex compared I what I wanted to build. 
+searched for an extension close to mine and took a look a the code. Remember extensions are installed in this folder, ´
+.local/share/gnome-shell/extensions/´, as far as I know there is nothing that prevent you to take a look at the code their.
+I used this one [Forex indicator](https://extensions.gnome.org/extension/867/forex-indicator)
+which is actually much more complex compared I what I wanted to build. By the way I would like to thank Trifonovkv the creator of this application.
+ Since it is open source I took the opportunity to get inspired.
+
+### Extends PanelMenu.Button
+
+We will change a bit our direction, we will use PanelMenu.Button instead of St.Bin. I don't know why the different, but let's take it as it is.
+Then we will extends this class in order to add custom features. Let's start slowly:
+
+{% highlight javascript %}
+const St = imports.gi.St;
+const Main = imports.ui.main;
+const Lang = imports.lang;
+const PanelMenu = imports.ui.panelMenu;
+
+const TransferWiseIndicator = new Lang.Class({
+ Name: 'TransferWiseIndicator', Extends: PanelMenu.Button,
+
+ _init: function ()
+ {
+   this.parent(0.0, "Transfer Wise Indicator", false);
+   let text = new St.Label({text: "Text"});
+   this.actor.add_actor(text);
+ }
+});
+
+let twMenu;
+
+function init()
+{
+}
+
+function enable()
+{
+  twMenu = new TransferWiseIndicator;
+  Main.panel.addToStatusArea('tw-indicator', twMenu);
+}
+
+function disable()
+{
+  twMenu.destroy();
+}
+{% endhighlight %}
+
+This does exactly the same as before but instead we created our own class TransferWiseIndicator.
+
+### Http request
+
+{% highlight javascript %}
+  //the library to work with http request
+  const Soup = imports.gi.Soup;
+
+  // request parameters
+  let params = {
+   amount: '1000',
+   sourceCurrency: 'CHF',
+   targetCurrency: 'EUR'
+  };
+
+  // new sesssion
+  let _httpSession = new Soup.Session();
+
+  // create http request:
+  // method (GET, POST, ...)
+  // url
+  // request parameters
+  let message = Soup.form_request_new_from_hash('GET', url, params);
+
+  // add headers needed for Transfer Wise
+  message.request_headers.append("X-Authorization-key", TW_AUTH_KEY);
+
+  // execute the request and define the callack
+  _httpSession.queue_message(message, Lang.bind(this,
+   function (_httpSession, message) {
+     if (message.status_code !== 200)
+       return;
+     let json = JSON.parse(message.response_body.data);
+     this._refreshUI(json);
+   })
+  );
+{% endhighlight %}
 
 ### Logger
 
