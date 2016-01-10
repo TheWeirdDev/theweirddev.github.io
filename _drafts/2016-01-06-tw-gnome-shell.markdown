@@ -9,15 +9,15 @@ description: Display in the top panel data from a web script.
 ---
 
 Lately I've been playing with __gnome-shell__, I wanted to create an extension and finally came up with a result. 
-The experience was actually painful due to a lack of documentation.
+The experience was actually a bit painful due to a lack of documentation.
 In this post will present the simple extension I've got and provide explanations whenever I can. 
 However, this should be taken with carefulness since I've start with few days ago. Nevertheless the 
 extension is pretty simple and I think it can help someone starting by me.
 
 The extension looks like this:  
 ![tw-example.png]({{ site.url }}/assets/posts/tw-gnome-shell/tw-example.png)
-It simply displays in the top panel a data retrieved from a web site. For information the web site I used
- is Transfer Wise but feel free to display whatever you like.
+It simply displays in the top panel data retrieved from a web site. For information, the web site I used
+ to get the data is Transfer Wise, obviously you could you anything other service.
 
 This post is not a tutorial to start with gnome-shell, it would be a really tough work. There is actually not so many doucentation online.
 I will just recommend you this link [http://mathematicalcoffee.blogspot.fr](http://mathematicalcoffee.blogspot.fr/2012/09/gnome-shell-extensions-getting-started.html).
@@ -49,7 +49,7 @@ $ dnf install gnome-tweak-tool
 
 ## Create a new project
 
-Creating a new extension is easy, it's by writing this command: 
+Creating a new extension is easy and done by writing this command: 
 {% highlight sh %}
 $ gnome-shell-extension-tool --create-extension
 {% endhighlight %}
@@ -62,7 +62,7 @@ For my extension I entered:
 * description: Get CHF transfer rate
 * uui: transferwise@smasue.github.com
 
-At the end a code editor will open showing the default code for an extension:
+Once the information submitted an editor will pop up showing the default code for an extension:
 
 {% highlight javascript %}
 const St = imports.gi.St;
@@ -120,22 +120,22 @@ function disable() {
 {% endhighlight %}
 There is a complete description of this code in the offical documentation [here](https://wiki.gnome.org/Projects/GnomeShell/Extensions/StepByStepTutorial#myFirstExtension).
 
-You can save and close the editor and reopen it in your favorite editor. The extensions are located in this folder:
+If you prefer you can re-open the code in you favorite editor. The extensions are located in this folder:
 {% highlight sh %}
 .local/share/gnome-shell/extensions/
 {% endhighlight %}
 
-You should see a folder named after the uuid you gave. Inside there are three files:
+You nust see a folder named after the uuid you gave. Inside there are three files:
 
 >
 * extension.js
 * metadata.js
 * stylesheet.css
 
-To install the extension, open the Tweaks Tool, then you should see it in the list. Switch it on. The extension
+To install the extension you need to open the Tweaks Tool, then you should see it in the list. Switch it on. The extension
 is a button with an icon in the top panel. When you click on it a popup appears with "Hello World".
 
-## Modify the extension
+## Start to write our own extension
 
 Now we have a new project we can start modifying it. For instance if you change the label.
 
@@ -143,7 +143,8 @@ Now we have a new project we can start modifying it. For instance if you change 
 text = new St.Label({ style_class: 'helloworld-label', text: "My first extension!" });
 {% endhighlight %}
 
-Then restart gnome-shell to make the change effective. `ALFT+ F2, write "r" and press enter`.
+Then restart gnome-shell to make the change effective. `ALFT+ F2, write "r" and press enter`. Normally if you click
+again on the button you should see the change.
 
 ### Step 1 clean up
 
@@ -180,8 +181,9 @@ function disable() {
 {% endhighlight %}
 
 I removed the function showHello and hideHello and change the button to display a text instead of the icon.
+So now it looks promising already.
  
-### Step 2
+### Step 2 Let's go further
 Let's go a bit further, though, it's not that simple without clear documentation. So to helped in this task I 
 went on the Gnome extension web site [https://extensions.gnome.org](https://extensions.gnome.org/) and
 searched for an extension close to mine and took a look a the code. I used this one (Forex indicator)[https://extensions.gnome.org/extension/867/forex-indicator/]
