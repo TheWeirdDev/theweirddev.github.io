@@ -10,7 +10,7 @@ description: Display in the top panel data retrieved from a web site.
 
 Lately I've been playing with __gnome-shell__, I wanted to create an extension and finally came up with a result. 
 The experience was actually a bit painful due to a lack of documentation.
-In this post will present the simple extension I've got and provide explanations whenever I can. 
+In this post I will present the simple extension I've got and provide explanations whenever I can.
 However, this should be taken with carefulness since I've started with few days ago. Nevertheless the 
 extension is pretty simple and I think it can help someone, starting by me.
 
