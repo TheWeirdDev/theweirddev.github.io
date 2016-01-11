@@ -42,6 +42,9 @@ Basically, you need to exclude from your pom.xml the dependency to`spring-boot-s
 </dependency>
 {% endhighlight %}
 
+> If your project does not depend on `spring-boot-starter-web` because it is not web. Then you will need to add this dependency
+`com.fasterxml.jackson.core:jackson-databind`.
+
 ## YAML
 
 The configuration goes in a file named `log4j2.yml` located in the folder `resources`. Hereunder is an example of
