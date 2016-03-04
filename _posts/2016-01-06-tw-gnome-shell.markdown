@@ -1,26 +1,29 @@
 ---
 layout: post
 title:  "Gnome shell: my first extension"
-date:   2016-01-06 23:56:45
+date:   2016-01-11 23:56:45
 comments: true
 permalink: gnome-shell-tw
 toc: true
-description: Display in the top panel data from a web script.
+description: Display in the top panel data retrieved from a web site.
 ---
 
 Lately I've been playing with __gnome-shell__, I wanted to create an extension and finally came up with a result. 
 The experience was actually a bit painful due to a lack of documentation.
-In this post will present the simple extension I've got and provide explanations whenever I can. 
+In this post I will present the simple extension I've got and provide explanations whenever I can.
 However, this should be taken with carefulness since I've started with few days ago. Nevertheless the 
 extension is pretty simple and I think it can help someone, starting by me.
 
 How it looks like:  
 ![tw-example.png]({{ site.url }}/assets/posts/tw-gnome-shell/tw-example.png)
-It simply displays in the top panel a data retrieved from a web site. For information, the web site I used
- is Transfer Wise but I encourage you to change for a data that interests you.
+It simply displays in the top panel an indicator retrieved from a web site. For information, the web site I used
+ is Transfer Wise but I encourage you to change for data that interests you.
 
-This post is not a tutorial to start with gnome-shell, it would have been a really tough work. There is actually not so much documentation online.
-I will just recommend you this link [http://mathematicalcoffee.blogspot.fr](http://mathematicalcoffee.blogspot.fr/2012/09/gnome-shell-extensions-getting-started.html).
+
+> - I am currently using version 3.16.4 of Gnome Shell.
+> - This post is not a tutorial to start with gnome-shell, it would have been a really tough work. There is actually not so much documentation online.
+> I will just recommend you this link: [http://mathematicalcoffee.blogspot.fr](http://mathematicalcoffee.blogspot
+.fr/2012/09/gnome-shell-extensions-getting-started.html).
 
 ## 1. Before starting
 
@@ -207,7 +210,7 @@ By the way, I would like to thank Trifonovkv the creator of this application.
 
 Before writing too much code I would like to introduce you how to log things. An easy way is to use `global.log`:
 {% highlight javascript %}
-global.log("log");
+global.log("914.72 CHF");
 {% endhighlight %}
 
 You can see the logs by opening the "Logs" application.
@@ -217,7 +220,8 @@ You can see the logs by opening the "Logs" application.
 
 ### a. Extends PanelMenu.Button
 
-We will change a bit our direction, we will use PanelMenu.Button instead of St.Bin. Then we will extends this class in order to add custom features. Let's start slowly:
+We will change a bit direction to use a `PanelMenu.Button` instead of a `St.Bin`. But the most important is, we will extends this class in order
+ to add custom features. Let's start slowly:
 
 {% highlight javascript %}
 const St = imports.gi.St;
@@ -297,10 +301,8 @@ The library used is Soup. We are missing the value for URL and TW_AUTH_KEY but I
 
 ### c. Loop
 
-Now we know how to display a text in the menu and to get data with an HTTP request. In theory if we merge
-what we've got we will be able to display the text from the web site and it is want we want. However, 
-it's not that awesome like that if the text does not refresh. 
-For that we will use another import:
+Now we know how to display a text in the top menu and to get data with an HTTP request. In theory if we merge
+that we are almost done. However, it's not that awesome if the text doesn't refresh. To do so, we will use another import:
 {% highlight javascript %}
 const Mainloop = imports.mainloop;
 {% endhighlight %}
@@ -308,14 +310,16 @@ const Mainloop = imports.mainloop;
 Create a loop:
 {% highlight javascript %}
 _refresh: function () {
-      if (this._timeout) {
-        Mainloop.source_remove(this._timeout);
-        this._timeout = null;
-      }
-			// the refresh fuction will be called every 10 sec.
-			this._timeout = Mainloop.timeout_add_seconds(10, Lang.bind(this, this._refresh));
-		},
+  if (this._timeout) {
+    Mainloop.source_remove(this._timeout);
+    this._timeout = null;
+  }
+  // the refresh function will be called every 10 sec.
+  this._timeout = Mainloop.timeout_add_seconds(10, Lang.bind(this, this._refresh));
+}
 {% endhighlight %}
+
+The refresh function will be part of our class and call every 10 sec.
 
 ### d. Put things together
 
@@ -334,72 +338,71 @@ const TW_AUTH_KEY = 'dad99d7d8e52c2c8aaf9fda788d8acdc';
 
 let _httpSession;
 const TransferWiseIndicator = new Lang.Class({
-		Name: 'TransferWiseIndicator',
-		Extends: PanelMenu.Button,
+  Name: 'TransferWiseIndicator',
+  Extends: PanelMenu.Button,
 
-		_init: function () {
-			this.parent(0.0, "Transfer Wise Indicator", false);
-			this.buttonText = new St.Label({
-				text: _("Loading..."),
-				y_align: Clutter.ActorAlign.CENTER
-			});
-			this.actor.add_actor(this.buttonText);
-			this._refresh();
-		},
+  _init: function () {
+    this.parent(0.0, "Transfer Wise Indicator", false);
+    this.buttonText = new St.Label({
+      text: _("Loading..."),
+      y_align: Clutter.ActorAlign.CENTER
+    });
+    this.actor.add_actor(this.buttonText);
+    this._refresh();
+  },
 
-		_refresh: function () {
-			this._loadData(this._refreshUI);
-			this._removeTimeout();
-			this._timeout = Mainloop.timeout_add_seconds(10, Lang.bind(this, this._refresh));
-			return true;
-		},
+  _refresh: function () {
+    this._loadData(this._refreshUI);
+    this._removeTimeout();
+    this._timeout = Mainloop.timeout_add_seconds(10, Lang.bind(this, this._refresh));
+    return true;
+  },
 
-		_loadData: function () {
-			let params = {
-				amount: '1000',
-				sourceCurrency: 'CHF',
-				targetCurrency: 'EUR'
-			};
-			_httpSession = new Soup.Session();
-			let message = Soup.form_request_new_from_hash('GET', TW_URL, params);
-			message.request_headers.append("X-Authorization-key", TW_AUTH_KEY);
-			_httpSession.queue_message(message, Lang.bind(this, function (_httpSession, message) {
-						if (message.status_code !== 200)
-							return;
-						let json = JSON.parse(message.response_body.data);
-						this._refreshUI(json);
-					}
-				)
-			);
-		},
+  _loadData: function () {
+    let params = {
+      amount: '1000',
+      sourceCurrency: 'CHF',
+      targetCurrency: 'EUR'
+    };
+    _httpSession = new Soup.Session();
+    let message = Soup.form_request_new_from_hash('GET', TW_URL, params);
+    message.request_headers.append("X-Authorization-key", TW_AUTH_KEY);
+    _httpSession.queue_message(message, Lang.bind(this, function (_httpSession, message) {
+          if (message.status_code !== 200)
+            return;
+          let json = JSON.parse(message.response_body.data);
+          this._refreshUI(json);
+        }
+      )
+    );
+  },
 
-		_refreshUI: function (data) {
-			let txt = data.transferwisePayOut.toString();
-			txt = txt.substring(0,6) + ' CHF';
-			global.log(txt);
-			this.buttonText.set_text(txt);
-		},
+  _refreshUI: function (data) {
+    let txt = data.transferwisePayOut.toString();
+    txt = txt.substring(0,6) + ' CHF';
+    global.log(txt);
+    this.buttonText.set_text(txt);
+  },
 
-		_removeTimeout: function () {
-			if (this._timeout) {
-				Mainloop.source_remove(this._timeout);
-				this._timeout = null;
-			}
-		},
+  _removeTimeout: function () {
+    if (this._timeout) {
+      Mainloop.source_remove(this._timeout);
+      this._timeout = null;
+    }
+  },
 
-		stop: function () {
-			if (_httpSession !== undefined)
-				_httpSession.abort();
-			_httpSession = undefined;
+  stop: function () {
+    if (_httpSession !== undefined)
+      _httpSession.abort();
+    _httpSession = undefined;
 
-			if (this._timeout)
-				Mainloop.source_remove(this._timeout);
-			this._timeout = undefined;
+    if (this._timeout)
+      Mainloop.source_remove(this._timeout);
+    this._timeout = undefined;
 
-			this.menu.removeAll();
-		}
-	}
-);
+    this.menu.removeAll();
+  }
+});
 
 let twMenu;
 
