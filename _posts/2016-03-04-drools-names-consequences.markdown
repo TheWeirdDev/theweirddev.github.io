@@ -16,7 +16,8 @@ There are already theoretical explanations on the internet about named consequen
 
 Hereunder is a sample of code from a project. It is about permissions on documents. A person asks if he can delete a document. Giving the following instructions:
 
-> * A document contains a list of persons who can delete (same for read, write, etc.), a bit like rights in Linux. A person can only delete if he is in this list. One element of the list is called an ACE (Access Control Entry). 
+> * A document is associated to a list of persons who can delete it (same for read, write, etc.), a bit like rights in Linux. A person
+can only delete if he is in this list. One element of the list is called an ACE (Access Control Entry).
 * A person can't delete his own documents (to avoid any conflict of interest). 
 * If the document has been created more than a month ago the document can't be deleted. The permission expired.
 * If the person is an admin he can delete any documents at any time.
