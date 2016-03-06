@@ -17,7 +17,7 @@ Canned queries are SQL queries executed on the Alfresco database and not on Solr
 
 ## Use Case
 
-Let's study a simple use case. You want to get all nodeRefs for a custom type. And since you millions nodes you want to be able to use
+Getting all nodeRefs for a custom type using a canned query. Since you have thousands nodes of this type you want to be able to use
 paging.
 
 ## Ibatis XML files
