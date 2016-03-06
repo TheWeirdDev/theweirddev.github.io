@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Alfresco canned queries"
-date:   2016-03-06 23:56:45
+date:   2016-03-06 20:56:45
 comments: true
 toc: false
 categories:
