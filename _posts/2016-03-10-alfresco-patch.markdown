@@ -36,7 +36,7 @@ public class CreateCustomAuthorityZonePatch extends AbstractPatch
   protected String applyInternal() throws Exception
   {
     authorityService.getOrCreateZone(CUSTOM_AUTHORITY_ZONE);
-    return "Path xxxx Create Custom authority zone finished";
+    return "Patch xxxx Create Custom authority zone finished";
   }
 
   public void setAuthorityService(AuthorityService authorityService)
@@ -48,13 +48,14 @@ public class CreateCustomAuthorityZonePatch extends AbstractPatch
 
 > Simply extends AbstractPath and overrides the method applyInternal.
 
-## Spring context
+## Spring context and properties
 
 `custom-context.xml`
 {% highlight xml%}
-  <bean id="patch.custom.createCustomAuthorityZone" class="cern.epersonnel.patch.CreateCustomAuthorityZonePatch" parent="basePatch">
+  <bean id="patch.custom.createCustomAuthorityZone" class="com.custom.patch.CreateCustomAuthorityZonePatch" parent="basePatch">
     <property name="id" value="patch.custom.createCustomAuthorityZone"/>
-    <property name="description" value="Patch number xxxx Create Custom authority zone"/>
+    <property name="description" value="patch.custom.createCustomAuthorityZone.description"/>
+    <property name="description" value="/>
     <property name="fixesFromSchema" value="0"/>
     <property name="fixesToSchema" value="${version.schema}"/>
     <property name="targetSchema" value="10000"/>
@@ -62,8 +63,41 @@ public class CreateCustomAuthorityZonePatch extends AbstractPatch
   </bean>
 {% endhighlight %}
 
-> * The description can be internationalized (i18n). 
- * The patch can be allowed only for a specific version this is why there are properties from/to/target. The values in my example are the defaults when you don't want to specify a version. 
+
+`i18n properties`
+{% highlight yml%}
+patch.custom.createCustomAuthorityZone=Create custom authority zone
+patch.custom.createCustomAuthorityZone.description=Patch description Create Custom authority zone
+{% endhighlight %}
+
+> The patch can be allowed only for a specific version this is why there are properties from/to/target. The values in my example are the defaults when you don't want to specify a version. 
  Thus, the patch will run next time Alfresco repository will start.
 
+## Additional information
+
 The code will be run in a __transaction__ as __System__ user. The result will be saved in the database in the table __ALF_APPLIED_PATCHES__.
+
+`SQL`
+{% highlight sql%}
+select 
+    * 
+from 
+    alf_applied_patch 
+where 
+    id = 'patch.custom.createCustomAuthorityZone'
+{% endhighlight %}
+
+`Result`
+{% highlight java%}
+id: "patch.custom.createCustomAuthorityZone"
+description: "Patch description Create Custom authority zone"
+fixes_from_schema: 0
+fixes_to_schema: 8009
+applied_to_schema: 8009
+target_schema: 10000
+applied_on_date: "2016-03-09 10:38:49.58"
+applied_to_server: "5.0.0 (c r91299-b145) - Community"
+was_executed: t
+succeeded: t
+report: "Patch xxxx Create Custom authority zone finished"
+{% endhighlight %}
