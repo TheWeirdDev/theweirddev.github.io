@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Alfresco create patch"
-date:   2016-03-14 20:00:45
+date:   2016-03-14 02:00:45
 comments: true
 toc: false
 categories:
@@ -26,7 +26,7 @@ Let's create a simple patch that will create a new authority zone.
 
 ## Java class
 
-`createCustomZone.java`
+`createCustomZonePatch.java`
 {% highlight java%}
 public class CreateCustomAuthorityZonePatch extends AbstractPatch
 {
@@ -46,7 +46,7 @@ public class CreateCustomAuthorityZonePatch extends AbstractPatch
 }
 {% endhighlight %}
 
-> Simply extends AbstractPath and overrides the method applyInternal
+> Simply extends AbstractPath and overrides the method applyInternal.
 
 ## Spring context
 
@@ -66,4 +66,4 @@ public class CreateCustomAuthorityZonePatch extends AbstractPatch
  * The patch can be allowed only for a specific version this is why there are properties from/to/target. The values in my example are the defaults when you don't want to specify a version. 
  Thus, the patch will run next time Alfresco repository will start.
 
-The code will be run in a __transaction__ as __System__ user. And result will be saved in the database in the table __ALF_APPLIED_PATCHES__.
+The code will be run in a __transaction__ as __System__ user. The result will be saved in the database in the table __ALF_APPLIED_PATCHES__.
