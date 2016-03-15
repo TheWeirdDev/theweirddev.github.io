@@ -75,7 +75,7 @@ patch.custom.createCustomAuthorityZone.description=Patch description Create Cust
 
 ## Additional information
 
-The code will be run in a __transaction__ as __System__ user. The result will be saved in the database in the table __ALF_APPLIED_PATCHES__.
+The code will be ran in a __transaction__ as __System__ user. The result will be saved in the database in the table __ALF_APPLIED_PATCHES__.
 
 `SQL`
 {% highlight sql%}
