@@ -55,7 +55,6 @@ public class CreateCustomAuthorityZonePatch extends AbstractPatch
   <bean id="patch.custom.createCustomAuthorityZone" class="com.custom.patch.CreateCustomAuthorityZonePatch" parent="basePatch">
     <property name="id" value="patch.custom.createCustomAuthorityZone"/>
     <property name="description" value="patch.custom.createCustomAuthorityZone.description"/>
-    <property name="description" value="/>
     <property name="fixesFromSchema" value="0"/>
     <property name="fixesToSchema" value="${version.schema}"/>
     <property name="targetSchema" value="10000"/>
