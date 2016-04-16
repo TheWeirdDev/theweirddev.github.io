@@ -1,22 +1,22 @@
 ---
 layout: post
-title:  "Alfresco, setup SSO using external subsystem"
-date:   2016-04-10 23:56:45
+title:  "Alfresco: SSO with the external auth subsystem"
+date:   2016-04-15 23:56:45
 comments: true
 toc: true
 categories:
 - blog
 permalink: alfresco-external-sso
-description: An example how setup the external SSO mechanism.
+description: An example how to setup the external authentication subsystem with SSO.
 ---
 
-We will see, in this post, an example of how to setup Alfresco with the external SSO subsystem.
-Let's list important points here in order to clarify the task:
+This post will cover an example of how to setup SSO using the external authentication subsystem.
+Before starting let's clarify a couple of points:
 
 * In my case, Alfresco repository won't be accessed directly by users, instead they will use Share. 
-* At the time a request reached Share, the user authentication has been already done by the external SSO component which acts as proxy. 
+* At the time a request reached Share, the user authentication has been already done by the SSO component which acts as a proxy. 
 * Then, all we need is to configure Share to retrieve which user has been authenticated through SSO. 
-* In my case the authenticated user will be taken from a specific header.
+* To do that, the authenticated user will be retrieved from a specific header.
 
 > __Information:__
 >
@@ -24,17 +24,17 @@ Let's list important points here in order to clarify the task:
 >
 > __Config used:__
 >
-> > * Shibboleth, OpenSAML
-> > * Alfresco Community 5.0.d
+> > * Shibboleth, SAML-based SSO
+> > * Alfresco Community 5.0.c
 > > * Tomcat 7
 
 ## 1. Alfresco global properties 
 
-The following configuration goes into the `alfresco-global.properties` located in the shared/classes folder on your tomcat installation.
+The following configuration goes into the `alfresco-global.properties` located in the __shared/classes__ folder on your tomcat installation. 
 
 ### a. authentication chain
 
-To set up our SSO we will need the external authentication subsystem. 
+To setup SSO, we need to configure the external authentication subsystem. The first step is to add it in the authentication chain.
 {% highlight properties %}
 #
 # The authentication chain
@@ -66,28 +66,30 @@ ldap.synchronization.active=true
 # External authentication (SSO) settings
 # -------------
 external.authentication.enabled=true
-external.authentication.defaultAdministratorUserNames=customadmin
+external.authentication.defaultAdministratorUserNames=admin,samuelm
 external.authentication.proxyHeader=CUSTOM_HEADER
 external.authentication.proxyUserName=
 {% endhighlight %}
 
 > * __enabled__: enable the external subsystem (true or false).
-> * __defaultAdministratorUserNames__: The comma separated list of default admins (user name). I don't think it's possible to bypass SSO in order to log as admin. so it's better the select at least a default admin.
-> * __proxyHeader__: the header that contains the user name of the authenticated user.
+> * __defaultAdministratorUserNames__: comma separated list of default admins (user name). I don't think it's possible to bypass SSO in order to log as admin. so it's better to select at least one value.  
+> * __proxyHeader__: header name that contains the username of the authenticated user. A header is key/value, basically SSO will override each request adding the header, eg. CUSTOM_HEADER=samuelm.
 > * __proxyUserName__: this property has to be set when using SSL, so we leave it empty. 
+>
+> Notice that this configuration can be moved in a separated file specific for this subsystem, which probably is a best practice. 
 
 ## 2. Share config
 
 I used the following config file `tomcat/shared/classes/alfresco/web-extension/share-config-custom.xml`.
 
-In the section Remote (make sure you have only one section)
+In the section Remote.
 {% highlight xml %}
 <config evaluator="string-compare" condition="Remote">
 {% endhighlight %}
 
 ### a. Add connector
 
-Create a new connector to specify the name of the header. It should be the same name as the one defined previously.
+Create a new connector with the property __userHeader__ to define the name of the header. It should be the same name as in the external auth subsystem.
 {% highlight xml %}
 <connector>
     <id>alfrescoHeader</id>
@@ -99,6 +101,9 @@ Create a new connector to specify the name of the header. It should be the same 
 {% endhighlight %}
 
 ### b. Add/change end-point
+
+This end point will be used by Share to talk to the Alfresco repository. I had many troubles to configure it with ssl.
+But since, I have Alfresco and Share on the same tomcat they don't need to talk over ssl. More details are in the next chapter.
 
 {% highlight xml %}
 <endpoint>
@@ -112,12 +117,10 @@ Create a new connector to specify the name of the header. It should be the same 
 </endpoint>
 {% endhighlight %}
 
-* This end point will use the previous connector.
-* identity is set to user
-* external-auth
-
-> This end point will be used by Share to talk to the Alfresco repository. I had many troubles to configure it with ssl.
-But since, I have Alfresco and Share on the same tomcat they don't need to talk over ssl. More details are in the next chapter.
+> * __connector-id__: this end point will use the previous connector.
+> * __endpoint-url__: the url to Alfresco repository, notice that "/wcs" is used instead of "/s".
+> * __identity__: is set to user.
+> * __external-auth__: true
 
 ### c. Full config
 {% highlight xml %}
@@ -173,12 +176,12 @@ But since, I have Alfresco and Share on the same tomcat they don't need to talk 
 
 ## 3. Tomcat
 
-In the server.xml
+In the `server.xml` of your tomcat installation.
 
 ### a. Open none-ssl connector
 
-If not already exist, add connector without SSL. This is used only for Share to talk with Alfresco using localhost. Another connector is used with SSL for clients to connect to Share (and Alfresco if needed).
-A firewall has been setup to close the port 8080 for the ouside.
+If it doesn't exist yet, add connector without SSL. This is used only for Share to talk with Alfresco using localhost. Another connector is used with SSL for clients to connect to Share (and Alfresco if needed).
+A firewall has been setup to close the port 8080 from the outside.
 
 {% highlight xml %}
 <Connector port="8080" protocol="HTTP/1.1" connectionTimeout="20000"/>
