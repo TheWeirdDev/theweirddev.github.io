@@ -57,7 +57,7 @@ public class CreateCustomAuthorityZonePatch extends AbstractPatch
     <property name="description" value="patch.custom.createCustomAuthorityZone.description"/>
     <property name="fixesFromSchema" value="0"/>
     <property name="fixesToSchema" value="${version.schema}"/>
-    <property name="targetSchema" value="10000"/>
+    <property name="targetSchema" value="100000"/>
     <property name="authorityService" ref="AuthorityService"/>
   </bean>
 {% endhighlight %}
@@ -93,7 +93,7 @@ description: "Patch description Create Custom authority zone"
 fixes_from_schema: 0
 fixes_to_schema: 8009
 applied_to_schema: 8009
-target_schema: 10000
+target_schema: 100000
 applied_on_date: "2016-03-09 10:38:49.58"
 applied_to_server: "5.0.0 (c r91299-b145) - Community"
 was_executed: t
