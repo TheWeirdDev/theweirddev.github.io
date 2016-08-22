@@ -1,22 +1,26 @@
 ---
 layout: post
 title:  "Spring boot: YAML multiple datasources"
-date:   2015-11-22 23:56:45
+date:   2016-08-21 23:56:45
 comments: true
 toc: false
 categories:
 - blog
 permalink: spring-yml-datasources
-description: How to configure multiple datasources in Srping boot using YAML.
+description: How to configure multiple datasources in Srping boot using YAML. (Updated)
 ---
 
+> This post is an update from the original post created the 22nd of Nov 2015.
+
 In this example we will see how to config two datasources on different environments (development, test, production)
-using a YAML config file.
+using a YAML config file. Before starting, I added in my __pom.xml__ the __spring-boot-starter-jdbc__.
 
 ## application.yml
 
-In order to select the environment I used profiles. Then, we can see the datasources configured on each
-environments.
+In order to represent the several environments I used profiles. After that, for each environment I set the properties concerning the datasources. We can 
+notice the two datasources each time.
+
+> Profiles are used to group beans together. For a specific profile the beans are created only if the profile is activated. 
 
 {% highlight yaml%}
 spring:
@@ -85,9 +89,14 @@ datasource:
 {% endhighlight %}
 
 ## Application.groovy
+ 
+Usually, Spring boot creates automatically a __datasource__ and a __jdbcTemplate__ when the __jdbc-starter__ is part of the dependencies. 
+Behind the scene, it checks in classpath for libraries brought by the starters, based on the presence of certain libraries it will autoconfigure beans.
+Spring boot is said as opinionated. Also, it is worth mentioning that Spring Boot reads the application properties to auto-configure the beans. This is how Spring Boot
+ can create a datasource, but you have to respect the right names for the properties. 
 
-When configuring multiple datasources we have to define the beans explicitly. Indeed, we need to tell Spring which properties to use for each datasource. Notice that one datasource can be marked as @primary which can save us to use the qualifier
- for the autowiring.
+In the case of multiple datasources Spring Boot can't guess that you actually want multiple datasources. Hopefully, it's possible to override Spring Boot behaviour and 
+define these beans ourself.
 
 {% highlight groovy%}
 import org.springframework.boot.SpringApplication
@@ -106,7 +115,6 @@ class Application {
   }
 
   @Bean
-  @Primary
   @ConfigurationProperties(prefix="datasource.db-person")
   public DataSource personDataSource() {
     return DataSourceBuilder.create().build();
@@ -117,42 +125,29 @@ class Application {
   public DataSource contractDataSource() {
     return DataSourceBuilder.create().build();
   }
-}
-{% endhighlight %}
-
-## DatabaseService.groovy
-
-Here just an example how to set up jdcTemplates using the datasources.
-
-{% highlight groovy%}
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.jdbc.core.JdbcTemplate
-
-import javax.sql.DataSource
-
-abstract class DatabaseService {
-
-  private JdbcTemplate personJdbcTemplate;
-  private JdbcTemplate contractJdbcTemplate;
-
-  @Autowired // primary datasource
-  DataSource personDataSource
-
-  @Autowired
-  @Qualifier("contractDataSource")
-  DataSource contractDataSource
-
-  protected personJdbcTemplate() {
-    if (personJdbcTemplate == null)
-      personJdbcTemplate = new JdbcTemplate(personDataSource);
-    return personJdbcTemplate
+  
+  @Bean
+  public JdbcTemplate personJdbcTemplate(){
+    return new JdbcTemplate(personDataSource());
   }
-
-  protected contractJdbcTemplate() {
-    if (contractJdbcTemplate == null)
-      contractJdbcTemplate = new JdbcTemplate(contractDataSource);
-    return contractJdbcTemplate
+  
+  @Bean
+  public JdbcTemplate contractJdbcTemplate(){
+    return new JdbcTemplate(contractDataSource());
+  }
+  
+  @Beans
+  public PersonRepository jdbcPersonRepository() {
+    PersonRepository personRepo = new JdbcPersonRepository();
+    personRepo.setJdbcTemplate(personJdbcTemplate());
+    return personRepo;
+  }
+  
+  @Beans
+  public ContractRepository jdbcContractRepository() {
+    ContractRepository contractRepo = new JdbcContractRepository();
+    contractRepo.setJdbcTemplate(contractJdbcTemplate());
+    return contractRepo;
   }
 }
 {% endhighlight %}
