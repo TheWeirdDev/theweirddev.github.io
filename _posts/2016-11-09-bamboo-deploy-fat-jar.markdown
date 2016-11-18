@@ -13,7 +13,7 @@ description: Deployment project on Bamboo to automate the deployment of fat jar.
 - Spring Boot  
 - Maven  
 
-This article is an example of how to deploy a Spring Boot fat jar on a remote server using Bamboo. As reminder, a fat jar is a self-contained jar, 
+This article shows an example of how to deploy a Spring Boot fat jar on a remote server using Bamboo. As reminder, a fat jar is a self-contained jar, 
 in other words it contains all the dependent libraries. With Spring boot it's also easy to embed an HTTP listen such as Tomcat.  
 
 ## Bamboo plan
