@@ -7,7 +7,7 @@ toc: false
 categories:
 - blog
 permalink: spring-yml-datasources
-description: How to configure multiple datasources in Srping boot using YAML. (Updated)
+description: How to configure multiple datasources in Spring boot using YAML. (Updated)
 ---
 
 > This post is an update from the original post created the 22nd of Nov 2015.
