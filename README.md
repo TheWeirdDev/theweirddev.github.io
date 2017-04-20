@@ -1,1 +1,1 @@
-Access blog page here http://smasue.github.io/
+Access blog page here http://alireza6677.github.io/
