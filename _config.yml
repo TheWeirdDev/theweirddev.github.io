@@ -4,31 +4,28 @@
 # baseurl: /blog
 
 # Site live URL
-url: http://smasue.github.io
+url: http://alireza6677.github.io
 
 # Localhost
 #url: http://127.0.0.1:4000
-name: Samuel Masue
-description: Yet another tech blog! Let's talk about Alfresco, Java, Linux, ...
-
+name: Alireza |S.N|
+description: کمی لینوکس کمی جاوا و کمی پایتون در کنار هم
 # Harmony theme configuration. Please change accordingly.
 harmony:
   meta_description: I am Samuel Masue. This blog will cover topics about Alfresco.
   basetheme: theme-base-01 # pre defined themes are darken, blue-water, redish.
   author: # Author details
-    name: Samuel Masue
-    email: samuel.masue@gmail.com
-    url: http://smasue.github.io
+    name: Alireza S.N
+    email: alireza6677@gmail.com
+    url: http://alireza6677.github.io
 
   # Google Analytics key, leave blank to ignore
-  google_analytics_key: UA-62556774-1
+  google_analytics_key:
 
   # Profile links, leave blank to ignore
   social: 
-    github: smasue
-    twitter: SamMcCandless
-    linkedin: smasue
-    gplus: +samuelmasué
+    github: alireza6677
+    twitter: alireza6677
     rss: feed.xml
     
   # Toggle disclaimer in footer
