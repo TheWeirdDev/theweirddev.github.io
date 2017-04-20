@@ -1,0 +1,347 @@
+---
+layout: post
+title: "Polymer"
+date: 2016-06-13 23:56:45
+description: No
+categories:
+- blog
+permalink: polymer
+---
+
+
+Intro
+
+## Polymer Base (base prototype for all polymer elements)
+
+{% highlight javascript %}
+MyElement = Polymer({is : 'my-element'});
+
+var el1 = document.createElement('my-element');
+var el2 = new MyElement();
+{% endhighlight %}
+
+
+### (Polymer Base) Lifecycle callbacks
+
+{% highlight javascript %}
+MyElement = Polymer({
+      is: 'my-element',
+
+      created: function() {
+        console.log(this.localName + '#' + this.id + ' was created');
+      },
+
+      ready: function() {
+        console.log(this.localName + '#' + this.id + ' has local DOM initialized');
+      },
+
+      attached: function() {
+        console.log(this.localName + '#' + this.id + ' was attached');
+      },
+
+      detached: function() {
+        console.log(this.localName + '#' + this.id + ' was detached');
+      },
+
+      attributeChanged: function(name, type) {
+        console.log(this.localName + '#' + this.id + ' attribute ' + name + ' was changed to ' + this.getAttribute(name));
+      }
+    });
+{% endhighlight %}
+
+### (Polymer Base) Properties
+
+* behaviors()
+* customStyle()
+* domHost()
+* listeners()
+{% highlight javascript %}
+Polymer({
+  listeners: {
+    // `click` events on the host are delegated to `clickHandler`
+    'tap': 'tapHandler'
+  },
+...
+});
+{% endhighlight %}
+* properties()
+* * type 
+* * value 
+* * notify 
+* * readOnly 
+* * reflectToAttribute 
+* * observer 
+* * computed 
+
+## JS FIDDLE with polymer 
+
+https://jsfiddle.net/wa5o2457/
+
+### (Polymer Base) Methods
+* $$(slctr) ➙ Element
+* arrayDelete(path, item) ➙ Array
+* async(callback, waitTime) ➙ number
+* attributeFollows(name, toElement, fromElement)
+* cancelAsync(handle)
+* cancelDebouncer(jobName)
+* classFollows(name, toElement, fromElement)
+* create(tag, props) ➙ Element
+* debounce(jobName, callback, wait)
+* deserialize(value, type) ➙ *
+* distributeContent(updateInsertionPoints)
+* distributeContent()
+* elementMatches(selector, node) ➙ boolean
+* fire(type, detail, options) ➙ CustomEvent
+* flushDebouncer(jobName)
+* get(path, root) ➙ *
+* getComputedStyleValue(property)
+* getContentChildNodes(slctr) ➙ Array.<Node>
+* getContentChildren(slctr) ➙ Array.<HTMLElement>
+* getEffectiveChildNodes() ➙ Array.<Node>
+* getEffectiveChildren() ➙ Array.<Node>
+* getEffectiveTextContent() ➙ Array.<Node>
+* getNativePrototype(tag) ➙ Object
+* getPropertyInfo(property)
+* importHref(href, onload, onerror, optAsync) ➙ HTMLLinkElement
+* instanceTemplate(template) ➙ DocumentFragment
+* 
+* ...........
+
+
+Les plus courants
+* toggleClass(name, bool, node)
+* fire(type, detail, options) ➙ CustomEvent
+* toggleAttribute(name, bool, node)
+* listen(node, eventName, methodName)
+* updateStyles(properties)
+
+# Polymer DOM API
+
+{% highlight javascript %}
+// in your code
+Polymer.dom ....
+    
+// in Polymer (static code ??)
+Polymer.dom = function (obj, patch) {
+    if (obj instanceof Event) {
+        return Polymer.EventApi.factory(obj);
+    } else {
+        return DomApi.factory(obj, patch);
+    }
+};
+{% endhighlight %}
+
+* Polymer.dom(parent).appendChild(node)
+* Polymer.dom(parent).insertBefore(node, beforeNode)
+* Polymer.dom(parent).removeChild(node)
+* Polymer.dom.flush()
+* Polymer.dom(parent).childNodes
+* Polymer.dom(parent).children
+* Polymer.dom(node).parentNode
+* Polymer.dom(node).firstChild
+* Polymer.dom(node).lastChild
+* Polymer.dom(node).firstElementChild
+* Polymer.dom(node).textContent
+* Polymer.dom(node).lastElementChild
+* Polymer.dom(node).nextSibling
+* Polymer.dom(node).previousSibling
+* Polymer.dom(node).innerHTML
+* Polymer.dom(parent).querySelector(selector)
+* Polymer.dom(parent).querySelectorAll(selector)
+* Polymer.dom(contentElement).getDistributedNodes()
+* Polymer.dom(node).getDestinationInsertionPoints()
+* Polymer.dom(node).setAttribute(attribute, value)
+* Polymer.dom(node).removeAttribute(attribute)
+* Polymer.dom(node).classList
+Polymer.dom(element).getEffectiveChildNodes()
+getEffectiveChildren
+queryEffectiveChildren(selector). Returns the first effective child that matches selector.
+queryAllEffectiveChildren(selector)
+Polymer.dom(this.$.contentNode).observeNodes(
+Polymer.dom(node).unobserveNodes(this._observer);
+
+Polymer.dom(this)
+Polymer.dom(this.root)
+Polymer.dom(this.$.list)
+
+{% highlight javascript %}
+    this.$.name.textContent = this.tagName;
+{% endhighlight %}
+
+## dom-repeat and arrays
+
+Mutations to the items array itself should me made using the Array mutation API's on Polymer.Base 
+(push, pop, splice, shift, unshift), and template instances will be kept in sync with the data in the array.
+
+Event on an element of dom-repeat is decorate with a model -> event.model
+ 
+this.$.domRepeat.modelForElement(event.target).set('item.checked', true);
+
+filters
+
+isEngineer: function(item) {
+    return item.type == 'engineer' || item.manager.type == 'engineer';
+}
+Then the observe property should be configured as follows:
+
+{% highlight javascript %}
+<template is="dom-repeat" items="{{employees}}"
+          filter="isEngineer" observe="type manager.type">
+{% endhighlight %}
+          
+
+#  Data binding
+
+Bind a property (sub-prop) from a custom element to a property or attribute of an element
+in its local DOM.
+
+## Binding annotations
+ 
+* [[]] -> one way binding. host-to-child. The element in the local DOM can't modify the value. 
+* \{\{\}\} -> one-way or two-ways binding
+
+
+{% highlight html %}
+<body> // this is the host
+    <custom-element att={{att}}></custom-element> //child
+</body>
+{% endhighlight %}
+
+// IF a property is used only inside a custom element then there is no need to notify
+
+https://www.polymer-project.org/1.0/docs/devguide/data-binding
+
+
+
+# Properties
+
+ type: Boolean, Date, Number, String, Array or Object
+ 
+# Style 
+
+:host -> it's like a this for CSS
+
+{% highlight javascript %}
+<style> should be placed inside <template>
+{% endhighlight %}
+
+{% highlight html %}
+
+<dom-module id="my-element">
+  <template>
+
+    <style>
+      :host {
+        display: block;
+        border: 1px solid red;
+      }
+      #child-element {
+        background: yellow;
+      }
+      /* styling elements distributed to content (via ::content) requires */
+      /* selecting the parent of the <content> element for compatibility with */
+      /* shady DOM . This can be :host or a wrapper element. */
+      .content-wrapper ::content > .special {
+        background: orange;
+      }
+    </style>
+
+    <div id="child-element">In local DOM!</div>
+    <div class="content-wrapper"><content></content></div>
+
+  </template>
+
+  <script>
+
+      Polymer({
+          is: 'my-element'
+      });
+
+  </script>
+
+</dom-module>
+{% endhighlight %}
+
+## Custom CSS properties (Theming)
+
+Custom CSS property with a default value
+{% highlight css %}
+color: var(--my-toolbar-title-color, blue);
+{% endhighlight %}
+
+{% highlight css %}
+.warning {
+    --my-toolbar-title-color: red;
+}
+{% endhighlight %}
+
+
+## Custom CSS mixing
+
+{% highlight css %}
+@apply(--my-toolbar-theme);
+{% endhighlight %}
+
+{% highlight css %}
+selector {
+  --mixin-name: {
+    /* rules */
+  };
+}
+{% endhighlight %}
+
+## Update Style
+
+{% highlight html %}
+<script>
+    Polymer({
+      is: 'x-custom',
+      changeTheme: function() {
+        this.customStyle['--my-toolbar-color'] = 'blue';
+        this.updateStyles();
+      }
+    });
+</script>
+{% endhighlight %}
+
+## style is="custom-style"
+The custom-style extension should only be used for defining document styles, outside of a custom element's local DOM.
+
+# Event listener
+
+{% highlight html %}
+<dom-module id="x-custom">
+  <template>
+    <div>I will respond</div>
+    <div>to a tap on</div>
+    <div>any of my children!</div>
+    <div id="special">I am special!</div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'x-custom',
+
+      listeners: {
+        'tap': 'regularTap',
+        'special.tap': 'specialTap'
+      },
+
+      regularTap: function(e) {
+        alert("Thank you for tapping");
+      },
+
+      specialTap: function(e) {
+        alert("It was special tapping");
+      }
+
+    });
+  </script>
+</dom-module>
+{% endhighlight %}
+
+{% highlight javascript %}
+this.listen(this.$.myButton, 'tap', 'onTap');
+this.unlisten(this.$.myButton, 'tap', 'onTap');
+{% endhighlight %}

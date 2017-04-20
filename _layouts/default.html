@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>{% if page.title %}{{ page.title }}{% else %}{{ site.harmony.name }}{% endif %}</title>
+        <title>{% if page.title %}{{ page.title }}{% else %}{{ site.name }}{% endif %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">        
         <meta name="description" content="{% if page.meta_description %}{{ page.meta_description }}{% else %}{{ site.harmony.meta_description }}{% endif %}">
         <link rel="canonical" 
@@ -11,10 +11,12 @@
         
         <!-- Harmony styles -->
         <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/assets/css/main.css">
+        <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/assets/css/toc.css">
 
         <!-- Modernizr js -->
-        <script async src="{{ site.baseurl }}/assets/js/modernizr.js"></script>    
-
+        <script async src="{{ site.baseurl }}/assets/js/modernizr.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="{{ site.baseurl }}/assets/js/jquery.toc.js"></script>
         <!-- IE Fixes -->
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -26,8 +28,8 @@
     <body class="{{ site.harmony.basetheme }}">
         <header class="main-header">
             <div class="wc-container">
-                <h1><a href="{{ site.baseurl }}/">{{ site.harmony.name }}</a></h1>
-                <h2>{{ site.harmony.description }}</h2>
+                <h1><a href="{{ site.baseurl }}/">{{ site.name }}</a></h1>
+                <h3>{{ site.description }}</h3>
                 {% include header-links.html %}                
             </div>
         </header>
@@ -58,7 +60,6 @@
           else window.addEventListener('load', cb);
         </script>
         <!-- jQuery -->
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <!-- When no internet load JQuery from local -->
         <script>window.jQuery || document.write('<script src="{{ site.baseurl }}/assets/js/jquery.min.js"><\/script>')</script>
         <!-- Site js -->

@@ -1,50 +1,42 @@
 # Harmony Jekyll theme general configurations 
 
 # Base URL
-baseurl: /harmony
+# baseurl: /blog
 
 # Site live URL
-url: http://gayan.me
+url: http://smasue.github.io
 
-# Localhost 
-# url: http://127.0.0.1:4000  
+# Localhost
+#url: http://127.0.0.1:4000
+name: Samuel Masue
+description: Yet another tech blog! Let's talk about Alfresco, Java, Linux, ...
 
 # Harmony theme configuration. Please change accordingly.
 harmony:
-  name: Harmony
-  # Little description about your site
-  description: Harmony is free responsive jekyll theme.
-  # 'meta_description:' Write an awesome description for your new site here.
-  # It will appear in your document head meta (for Google search results) and 
-  # in your feed.xml site description.
-  meta_description: > # 
-   Harmony is a free responsive jekyll theme by Gayan Virajith
-   and Maheshika Lakmali. Sourced on Github - 
-   https://github.com/gayanvirajith/harmony
-  basetheme: theme-base-01 # pre defined thmes are darken, blue-water, redish.
+  meta_description: I am Samuel Masue. This blog will cover topics about Alfresco.
+  basetheme: theme-base-01 # pre defined themes are darken, blue-water, redish.
   author: # Author details
-    name: Gayan Virajith
-    email: gayanvirajith@gmail.com
-    url: http://gayanvirajith.github.io
+    name: Samuel Masue
+    email: samuel.masue@gmail.com
+    url: http://smasue.github.io
 
   # Google Analytics key, leave blank to ignore
-  google_analytics_key: UA-xxxx-x
+  google_analytics_key: UA-62556774-1
 
   # Profile links, leave blank to ignore
   social: 
-    github: gayanvirajith
-    twitter: gayanvirajith
-    facebook: gayanvirajith
-    gplus: +GayanVirajith
-    dribble: gayan
-    pinterest: 
+    github: smasue
+    twitter: SamMcCandless
+    linkedin: smasue
+    gplus: +samuelmasué
+    rss: feed.xml
+    
   # Toggle disclaimer in footer
   show_disclaimer: true
 
 # Conversion / Build settings 
 markdown:    kramdown
-# This is how you put pygments config in jekyll 2.0 instead of pygments: true
-highlighter: pygments 
+highlighter: rouge
 
 # Permalinks
 permalink:        pretty
@@ -62,3 +54,5 @@ exclude:
 sass:
     sass_dir: assets/css/_sass
     style: :compressed
+    
+gems: [git,jekyll-gist]
