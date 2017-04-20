@@ -1,23 +1,20 @@
 ---
 layout: page
-title: About me
+title: درباره ی وبلاگ
 permalink: /about/
 ---
 
-Hello, I am Samuel Masue software developer in Switzerland, Geneva area. I have a background in Java and I am keen on
- new
-technologies.
+سلام . من سید علیرضا صالح نژاد هستم . علاقه مند به لینوکس ، پایتون و جاوا
 
-Last year I was fully dedicated to a new project in my company around the solution Alfresco.
-I spent many and many days extending and customizing it. Today I would like to share my experience and who
-knows it might help someone.
+هر از گاهی به مطالب جالبی بر میخوردم پس تصمیم گرفتم از این به بعد بنویسمشون . امیدوارم مفید باشه.
 
 
-### Contact me
+### ارتباط با من
 
-Find me on [Linkedin][linkedin] / [Google+][google] / [Github][github] / [Twitter][Twitter] or just say hello.
+* [Github][github] 
+* [Twitter][Twitter] 
+* [Telegram][telegram]
 
-[google]: https://plus.google.com/u/0/100576411137255271979/posts
-[twitter]: https://twitter.com/SamMcCandless
-[linkedin]: https://www.linkedin.com/in/samuelmasue
-[github]: https://github.com/smasue
+[twitter]: https://twitter.com/alireza6677
+[telegram]: https://t.me/alireza6677
+[github]: https://github.com/alireza6677

@@ -1,0 +1,45 @@
+---
+layout: post
+title:  "تست"
+date:   2017-04-19 13:56:45
+comments: true
+permalink: test
+toc: false
+description: اولین پست . در حال تست
+---
+
+در حال تست قالب
+
+> تست:  
+>
+* جاوا
+* پایتون
+
+تست کد ها
+
+اس کیو ال
+{% highlight sql %}
+CREATE TABLE NOTIFICATION(
+  "ID" NUMBER(5,0) NOT NULL,
+  "TEXT" VARCHAR2(4000) NOT NULL,
+  "TITLE" VARCHAR2(250) NOT NULL,
+  "NOTIFICATION_LEVEL" VARCHAR2(10) NOT NULL,
+  CONSTRAINT notification_pk PRIMARY KEY (ID)
+);
+
+CREATE SEQUENCE "NOTIFICATION_SEQ" START WITH 1;
+{% endhighlight %}
+
+جاوا
+{% highlight java %}
+public class Notification
+{
+  private int id;
+  private String title;
+  private String text; 
+  private String level;
+  
+  // + plus all the getters and setters...
+}
+{% endhighlight %}
+

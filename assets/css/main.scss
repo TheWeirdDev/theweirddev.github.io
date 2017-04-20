@@ -195,7 +195,7 @@ header.main-header {
   border-top: 5px $base-00 solid;
   background-color: $base-01;
 
-  h1, h2 { text-align: left; color: inherit;}
+  h1, h2 { text-align: right; color: inherit;}
   a {
     color: $color-white;
     &:hover, &:active, &:focus {
@@ -212,17 +212,19 @@ header.main-header {
     width: 100%;
     text-align: right;
     padding: 15px;
+    float: left;
   }
   ul li {
     display: inline-block;
     position:relative;
     color: $base-08;
+    float: left;
   }
 
   ul li span {
     float: left;
     display: inline-block;
-    width: 15px;
+    width: 30px;
   }
 
   ul li a {
@@ -288,6 +290,7 @@ footer.main-footer {
   }
 
  ul.social-media {
+     float: right;
   text-align:left;
   padding: 0 0 10px 0;
   li {
@@ -637,11 +640,16 @@ div.post {
     border-bottom: none;
   }
 }
+.post-date{
+      direction: ltr;
+    float : left;
+}
 span.post-date {
   padding: 4px;
   background-color: #519f50;
   border-radius: 4px;
   color: white;
+
 
   @include MQ(M) {
     @include font-size(13px);
