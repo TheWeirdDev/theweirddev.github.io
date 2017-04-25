@@ -8,12 +8,12 @@ url: http://alireza6677.github.io
 
 # Localhost
 #url: http://127.0.0.1:4000
-name: تست
+name: فعلا بدون نام :)
 description: کمی لینوکس ،‌پایتون و جاوا در کنار هم
 dir: rtl
 # Harmony theme configuration. Please change accordingly.
 harmony:
-  meta_description: I am Samuel Masue. This blog will cover topics about Alfresco.
+  meta_description: وبلاگی در مورد همه چیز
   basetheme: theme-base-01 # pre defined themes are darken, blue-water, redish.
   author: # Author details
     name: Alireza S.N
