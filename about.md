@@ -15,6 +15,6 @@ permalink: /about/
 * [Twitter][Twitter] 
 * [Telegram][telegram]
 
-[twitter]: https://twitter.com/alireza6677
+[twitter]: https://twitter.com/TheWeirdDev
 [telegram]: https://t.me/alireza6677
 [github]: https://github.com/alireza6677
