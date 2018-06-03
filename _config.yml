@@ -4,7 +4,7 @@
 # baseurl: /blog
 
 # Site live URL
-url: http://alireza6677.github.io
+url: http://theweirddev.github.io
 
 # Localhost
 #url: http://127.0.0.1:4000
@@ -18,15 +18,15 @@ harmony:
   author: # Author details
     name: Alireza S.N
     email: alireza6677@gmail.com
-    url: http://alireza6677.github.io
+    url: http://theweirddev.github.io
 
   # Google Analytics key, leave blank to ignore
   google_analytics_key:
 
   # Profile links, leave blank to ignore
   social: 
-    github: alireza6677
-    twitter: alireza6677
+    github: theweirddev
+    twitter: theweirddev
     rss: feed.xml
     
   # Toggle disclaimer in footer
