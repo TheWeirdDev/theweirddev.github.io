@@ -1,1 +1,1 @@
-Access blog page here http://alireza6677.github.io/
+Access blog page here https://theweirddev.github.io/
